@@ -1,0 +1,2 @@
+D:\gDrive\_prog\git\swapi\obj\Debug\swapiExample.njsprojResolveAssemblyReference.cache
+D:\gDrive\_prog\git\swapi\bin\Microsoft.NodejsTools.WebRole.dll

@@ -1,0 +1,35 @@
+{
+  // port to listen
+  "port": 3000,
+
+  // hosto to swagger ui
+  "host": "127.0.0.1",
+
+  //service name
+  "name": "Swapi example",
+
+  //basedir for locations
+  "baseDir": "../",
+
+  //timezone
+  "timezone":  "UTC",
+
+  //activate swagger explorer in http://host:port/explorer
+  "debug": true,
+
+  //default locations
+  "locations": {
+    "swaggerFile": "config/swagger20.json",
+    "modulesFile": "config/modules.hjson",
+    "connections": "config/connections.js",
+    "routesApi": "./routesApi",
+    "routesDir": "./routesDir",
+    "security": "./security",
+    "models": "./models",
+    "libs": "./lib",
+    "views": "./views",
+    "init": "./init",
+    "static": "./public"
+  }
+
+}

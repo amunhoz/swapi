@@ -1,0 +1,126 @@
+{
+  //===================================================================================
+  // system log
+  // use sysLog.info(), sysLog.error()
+  "winston": {
+    "enabled": true,
+    "priority": 1
+  },
+
+  //===================================================================================
+  // queue system for swapi check https://www.npmjs.com/package/queue
+  // use swapi.queue.add(function());
+  "queue": {
+    "enabled": true,
+    "priority": 2,
+    "config": {
+      //job concurrency
+      "concurrency": 4
+    }
+  },
+
+  //===================================================================================
+  //events library loaded into swapi.events
+  "events": {
+    "enabled": true,
+    "priority": 3
+  },
+
+  //===================================================================================
+  //basic configuration for express, gzip, etc.
+  "express-basic": {
+    "enabled": true,
+    "priority": 10
+  },
+
+  //===================================================================================
+  //express logging
+  "morgam": {
+    "enabled": false,
+    "priority": 10
+  },
+
+  //===================================================================================
+  // automatic open models on /models
+  // swapi.models or swapi.imodels (modified version with events triggers)
+  "waterline": {
+    "enabled": true,
+    "priority": 11
+  },
+
+  //===================================================================================
+  //start api boot scripts
+  "api-init": {
+    "enabled": true,
+    "priority": 15
+  },
+
+  //===================================================================================
+  //start cache manager
+  // loaded into swapi.cache
+  "cache-manager": {
+    "enabled": true,
+    "priority": 50,
+
+    //check https://www.npmjs.com/package/cache-manager for options
+    "options": {
+      "store": "memory",
+      "max": 10000,
+      "ttl": 86400 /*1 day in seconds*/
+    }
+
+  },
+
+  //===================================================================================
+  //load node-schedule on swapi.schedule
+  "schedule": {
+    "enabled": true,
+    "priority": 100
+  },
+
+
+  //===================================================================================
+  //create a api test interface on http://host:port/explorer
+  "swagger-ui-express": {
+    "enabled": true,
+    "priority": 999
+  },
+
+  //===================================================================================
+  //serve static files on /public location
+  "serve-static": {
+    "enabled": true,
+    "priority": 999
+  },
+
+  //===================================================================================
+  //too much security for test enviroment
+  "lusca": {
+    "enabled": false,
+    "priority": 999
+  },
+
+  //===================================================================================
+  //template system for /views
+  // use swapi.render(tplname);
+  "marko": {
+    "enabled": true,
+    "priority": 999
+  },
+
+  //===================================================================================
+  //build routes based on swagger documentation on routesApi
+  "swaggerize-express": {
+    "enabled": true,
+    "priority": 999
+  },
+
+
+  //===================================================================================
+  //build routes from routesDir directory files
+  "mount-routes": {
+    "enabled": true,
+    "priority": 1000
+  }
+
+}

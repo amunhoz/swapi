@@ -1,0 +1,236 @@
+{
+  "data": {
+    "Category": [
+      {
+        "name": "string",
+        "createdAt": "2017-07-06T14:20:03.978Z",
+        "updatedAt": "2017-07-06T14:20:03.978Z",
+        "id": 1
+      },
+      {
+        "name": "string",
+        "createdAt": "2017-07-06T14:20:49.964Z",
+        "updatedAt": "2017-07-06T14:20:49.964Z",
+        "id": 2
+      },
+      {
+        "name": "string",
+        "createdAt": "2017-07-06T14:22:00.825Z",
+        "updatedAt": "2017-07-06T14:22:00.825Z",
+        "id": 3
+      }
+    ],
+    "Order": [],
+    "Pet": [
+      {
+        "category": 3,
+        "name": "doggie",
+        "photoUrls": [
+          "string"
+        ],
+        "tag": 7,
+        "status": "pending",
+        "createdAt": "2017-07-06T14:22:00.832Z",
+        "updatedAt": "2017-07-06T14:22:00.832Z",
+        "id": 1
+      }
+    ],
+    "Tag": [
+      {
+        "name": "string1",
+        "createdAt": "2017-07-06T14:20:03.980Z",
+        "updatedAt": "2017-07-06T14:20:03.980Z",
+        "id": 5
+      },
+      {
+        "name": "string2",
+        "createdAt": "2017-07-06T14:20:49.968Z",
+        "updatedAt": "2017-07-06T14:20:49.968Z",
+        "id": 6
+      },
+      {
+        "name": "string3",
+        "createdAt": "2017-07-06T14:22:00.827Z",
+        "updatedAt": "2017-07-06T14:22:00.827Z",
+        "id": 7
+      }
+    ],
+    "User": [
+      {
+        "username": "user1",
+        "firstName": "user1",
+        "lastName": "user1",
+        "email": "user1",
+        "password": "user1",
+        "phone": "user1",
+        "userStatus": 1,
+        "createdAt": "2017-07-06T14:36:02.481Z",
+        "updatedAt": "2017-07-06T14:36:14.364Z",
+        "id": 1
+      }
+    ]
+  },
+  "schema": {
+    "Category": {
+      "id": {
+        "type": "integer",
+        "primaryKey": true,
+        "unique": true,
+        "autoIncrement": true
+      },
+      "name": {
+        "type": "string"
+      },
+      "createdAt": {
+        "type": "datetime"
+      },
+      "updatedAt": {
+        "type": "datetime"
+      }
+    },
+    "Order": {
+      "id": {
+        "type": "integer",
+        "primaryKey": true,
+        "unique": true,
+        "autoIncrement": true
+      },
+      "petId": {
+        "type": "integer"
+      },
+      "quantity": {
+        "type": "integer"
+      },
+      "shipDate": {
+        "type": "datetime"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "placed",
+          "approved",
+          "delivered"
+        ]
+      },
+      "complete": {
+        "type": "boolean"
+      },
+      "createdAt": {
+        "type": "datetime"
+      },
+      "updatedAt": {
+        "type": "datetime"
+      }
+    },
+    "Pet": {
+      "id": {
+        "type": "integer",
+        "primaryKey": true,
+        "unique": true,
+        "autoIncrement": true
+      },
+      "category": {
+        "type": "integer",
+        "model": "category",
+        "foreignKey": true,
+        "alias": "category"
+      },
+      "name": {
+        "type": "string"
+      },
+      "photoUrls": {
+        "type": "array"
+      },
+      "tag": {
+        "type": "integer",
+        "model": "tag",
+        "foreignKey": true,
+        "alias": "tag"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "available",
+          "pending",
+          "sold"
+        ]
+      },
+      "complete": {
+        "type": "boolean"
+      },
+      "createdAt": {
+        "type": "datetime"
+      },
+      "updatedAt": {
+        "type": "datetime"
+      }
+    },
+    "Tag": {
+      "id": {
+        "type": "integer",
+        "primaryKey": true,
+        "unique": true,
+        "autoIncrement": true
+      },
+      "name": {
+        "type": "string"
+      },
+      "createdAt": {
+        "type": "datetime"
+      },
+      "updatedAt": {
+        "type": "datetime"
+      }
+    },
+    "User": {
+      "id": {
+        "type": "integer",
+        "primaryKey": true,
+        "unique": true,
+        "autoIncrement": true
+      },
+      "username": {
+        "type": "string"
+      },
+      "firstName": {
+        "type": "string"
+      },
+      "lastName": {
+        "type": "string"
+      },
+      "email": {
+        "type": "string"
+      },
+      "password": {
+        "type": "string"
+      },
+      "phone": {
+        "type": "string"
+      },
+      "userStatus": {
+        "type": "integer"
+      },
+      "createdAt": {
+        "type": "datetime"
+      },
+      "updatedAt": {
+        "type": "datetime"
+      }
+    }
+  },
+  "counters": {
+    "Category": {
+      "id": 3
+    },
+    "Order": {},
+    "Pet": {
+      "id": 1
+    },
+    "Tag": {
+      "id": 7
+    },
+    "User": {
+      "id": 1
+    }
+  }
+}

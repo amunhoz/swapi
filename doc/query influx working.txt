@@ -1,0 +1,22 @@
+SELECT  last(close) as close, first(open) as open, max(high) as high, min(low) as low, sum(volume) as volume FROM "20d"."quotes1h" GROUP BY time(1d)
+
+SELECT  last(close) as close, first(open) as open, max(high) as high, min(low) as low, sum(volume) as volume FROM "20d"."quotes1h" where time >1490042540000000000 GROUP BY time(1d)
+
+
+SELECT last(close) as close, first(open) as open, max(high) as high, min(low) as low, sum(volume) as volume FROM quotes WHERE time >= '2017-06-01T00:00:00Z' AND time <= '2017-06-10T00:30:00Z'
+
+SELECT last(close) as close, first(open) as open, max(high) as high, min(low) as low, sum(volume) as volume  FROM quotes WHERE time >=1495042540000000000 group by stock, time(1d)
+
+
+SELECT last(close) as close, first(open) as open, max(high) as high, min(low) as low, sum(volume) as volume  FROM quotes WHERE time > now() - 5d group by  time(1d), stock
+
+select * FROM quotes where (time > now() - 5d) 
+
+select * FROM quotes where (time > now() - 100d AND stock = 'ANIM3' ) 
+select * FROM quotes where (time > now() - 100d AND stock = 'ANIM3' ) limit 10
+
+
+https://github.com/influxdata/influxdb/issues/7198
+CREATE CONTINUOUS QUERY mycq ON mydb RESAMPLE EVERY 1m BEGIN
+    SELECT mean(*) INTO mydb."5m".:MEASUREMENT FROM /.*/ GROUP BY time(5m)
+END;
