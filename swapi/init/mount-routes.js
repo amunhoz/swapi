@@ -5,6 +5,6 @@ module.exports = {
 	const path = require("path");
     var mount = require('mount-routes');
     mount(app, global.swapi.config.locations.routesDir);
-    console.log("(init) Express path route loaded from " + global.swapi.config.locations.routes);
+    console.log("(init) Express path route loaded from " + global.swapi.config.locations.routesDir);
   }
 }
