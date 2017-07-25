@@ -57,35 +57,34 @@
   },
 
   //===================================================================================
-  //start api boot scripts
-  "api-init": {
-    "enabled": true,
-    "priority": 15
-  },
-
-  //===================================================================================
   //start cache manager
   // loaded into swapi.cache
   "cache-manager": {
     "enabled": true,
-    "priority": 50,
+    "priority": 11,
 
     //check https://www.npmjs.com/package/cache-manager for options
     "options": {
       "store": "memory",
-      "max": 10000,
+      "max": 100000,
       "ttl": 86400 /*1 day in seconds*/
     }
 
   },
 
-  //===================================================================================
+ //===================================================================================
   //load node-schedule on swapi.schedule
   "schedule": {
     "enabled": true,
-    "priority": 100
+    "priority": 12
   },
 
+  //===================================================================================
+  //start api boot scripts
+  "api-init": {
+    "enabled": true,
+    "priority": 15
+  },
 
   //===================================================================================
   //create a api test interface on http://host:port/explorer
