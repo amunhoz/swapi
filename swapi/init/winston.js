@@ -7,8 +7,7 @@ module.exports = {
         var winston = require('winston');
         var path = require("path");
 
-        global.sysLog = new (winston.Logger)({
-            transports: [
+        let transports = [
                 new (winston.transports.File)({
                     name: 'info-file',
                     filename: path.resolve(__dirname, '../../data/sysInfo.log'),
@@ -20,9 +19,14 @@ module.exports = {
                     filename: path.resolve(__dirname, '../../data/sysErr.log'),
                     level: 'error',
                     timestamp: true
-                }),
-                new (winston.transports.Console)({ timestamp: true })
+                })
             ]
+        if (swapi.config.debug) {
+            transports.push(new (winston.transports.Console)({ timestamp: true }));
+        }
+
+        global.sysLog = new (winston.Logger)({
+            transports: transports
         });
         console.log("(init) Winston loaded");
     }
