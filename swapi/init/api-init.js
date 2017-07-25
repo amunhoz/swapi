@@ -10,7 +10,7 @@ module.exports = {
       }
         
 
-      global.swapi.lib = await requireDir(swapi.config.locations.libs);
+      global.swapi.lib = await requireDir(swapi.config.locations.libs, { recurse: true });
       console.log("  -> Loading api libraries done.");			
 
 
