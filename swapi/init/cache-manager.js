@@ -3,8 +3,6 @@ const path = require("path");
 module.exports = {
     name: "cache-manager",
     run: async function (app) {
-        var queue = require('queue');
-
 		var cacheManager = require('cache-manager');
 		let options = swapi.config.modules["cache-manager"].options;
         swapi.cache = cacheManager.caching(options);
