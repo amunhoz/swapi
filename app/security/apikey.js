@@ -1,3 +1,7 @@
+
+//this file name need to be the same name as your security policy in swagger
+//then it will be executed automaticaly
+
 const moment = require("moment");
 
 async function authorize(req, res, next) {

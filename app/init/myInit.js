@@ -1,4 +1,6 @@
-﻿//example to load exclusive api things
+﻿//This file will be executed every time the system boot
+//it will follow the order defined in 'priority' property
+
 
 module.exports = {
     priority: 999,
@@ -8,7 +10,7 @@ module.exports = {
 
         console.log(" -- (api init) Tests cache loaded");
         
-        //test queue
+        //test swapi queue
         for (var i = 0; i < 5; i++) {
 
             let x = i; //new variable to this context, wont change value in other queue
@@ -22,7 +24,6 @@ module.exports = {
 
     }
 }
-
 function testBull(p1, p2) {
     console.log(p1);
     console.log(p2);
