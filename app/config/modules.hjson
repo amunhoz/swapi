@@ -102,7 +102,7 @@
 
   //===================================================================================
   //too much security for test enviroment
-  "lusca": {
+  "helmet": {
     "enabled": false,
     "priority": 999
   },
