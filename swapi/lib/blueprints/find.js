@@ -1,7 +1,26 @@
 'use strict';
 
 var find = async function (ctx, returnResult) {
-	//ctx = {modelName:modname , req: req, res: res,  addFilter: addFilter, sort: sort}
+    /*
+    ctx = {
+        modelName:modname,                  //model name for the operation
+        req: req,                           // request object
+        res: res,                           // response object
+        addFilter: addFilter,               // additional filter
+        query: {                            // will replace parameters in query (sort, limit, skip, filter)
+            filter: {field: "value"},        //replace the filter
+            sort: sort,                     // Field ASC, reorder
+            limit: limit,                   // limit itens
+            skip: skip                      // skip itens
+        }
+        subItens:{
+            modelName : "checklist_itens", //model name for subitens
+            parentField : "checklist_id",  // parent id field name
+            itemName : "itens",            // name for the itens in the data array
+            primaryKey: "id"
+        }
+    }
+    */
     var response = {};
     let criteria = {};
 
@@ -16,22 +35,22 @@ var find = async function (ctx, returnResult) {
 
     //----------------------------------------------------------------------------------------------------------
     //defining criteria
-
+    var query = {};
+    if (ctx.query) query = ctx.query;
+    else query = ctx.req.query;
+    
     //filter
-    if (ctx.req.query.filter) criteria.filter  = lib.blueHelper.CheckFilterJson(ctx.req.query.filter);
-    else if (ctx.filter) criteria.filter  = ctx.filter;
-    if (ctx.addFilter) {
-        criteria.filter  = lib.blueHelper.AddAndFilter(criteria.filter, ctx.addFilter);
-    }
+    if (query.filter) criteria.filter  = lib.blueHelper.CheckFilterJson(query.filter);    
+    if (ctx.addFilter) criteria.filter  = lib.blueHelper.AddAndFilter(criteria.filter, ctx.addFilter);
 
     //limit for query
-    if (ctx.req.query.limit) criteria.limit = ctx.req.query.limit;
+    if (query.limit) criteria.limit = query.limit;
 
     //skip
-    if (ctx.req.query.skip) criteria.skip = ctx.req.query.skip;
+    if (query.skip) criteria.skip = query.skip;
 
     //sort
-    if (ctx.req.query.sort) criteria.sort  = ctx.req.query.sort;
+    if (query.sort) criteria.sort  = query.sort;
     else if (ctx.sort) criteria.sort  = ctx.sort;
 
 

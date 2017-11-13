@@ -1,7 +1,24 @@
 'use strict';
 
 var func = async function (ctx, returnResult) {
-	//ctx = {modelName:modname , req: req, res: res, filter: filter}
+	/*
+    ctx = {
+        modelName:modname,                  //model name for the operation
+        req: req,                           // request object
+        res: res,                           // response object
+        addFilter: addFilter,               // additional filter
+        query: {                            // will replace parameters in query (sort, limit, skip, filter)
+            filter: {field: "value"},        //replace the filter
+        },
+        subItens:{
+            modelName : "model_itens", //model name for subitens
+            parentField : "model_id",  // parent id field name
+            itemName : "itens",            // name for the itens in the data array
+            primaryKey: "id"
+        }
+    }
+    */
+
     
     //----------------------------------------------------------------------------------------------------------
     //checking model

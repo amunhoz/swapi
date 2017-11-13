@@ -1,7 +1,30 @@
 'use strict';
 
 var func = async function (ctx, returnResult) {
-	//ctx = {modelName:modname , req: req, res: res, defaults: {field1:"lalal"} } 
+    /*
+    ctx = {
+        modelName:modname,                  //model name for the operation
+        req: req,                           // request object
+        res: res,                           // response object
+        addFilter: addFilter,               // additional filter
+        query: {                            // will replace parameters in query (sort, limit, skip, filter)
+            sort: sort,                     // Field ASC, reorder
+            limit: limit,                   // limit itens
+            skip: skip                      // skip itens
+        },
+        subItens:{
+            modelName : "checklist_itens", //model name for subitens
+            parentField : "checklist_id",  // parent id field name
+            itemName : "itens",            // name for the itens in the data array
+            primaryKey: "id"
+        },
+        defaults: {
+            field1: "value",
+            field2: "value"
+        }
+    }
+    */
+    
     var response = {};
     //----------------------------------------------------------------------------------------------------------
     //checking model
@@ -45,7 +68,7 @@ var func = async function (ctx, returnResult) {
     
     //----------------------------------------------------------------------------------------------------------
     //suport for sub itens 
-    if (ctx.subItens && result) {
+    if (ctx.subItens && result && dataItens[0]) {
         //getting model
         let smodel = swapi.imodels[ctx.subItens.modelName];
         if (!smodel) {
