@@ -1,34 +1,38 @@
 'use strict';
 
-var findOne = async function (ctx) {
-	//ctx = {modelName:modname , req: req, res: res, addFilter: filter , fieldKey: "id"}
-    let criteria = {};
-    criteria.filter  = {};
-
+var findOne = async function (ctx, returnResult) {
     //getting model
-    let model = swapi.imodels[ctx.modelName.toLowerCase()];
-    if (!model) return ctx.res.status(500).send({ "success": false, error: "Model not found! (" + ctx.modelName + ")" })
+    let model = swapi.imodels[ctx.modelName];
+    if (!model) {
+        response = {code:500, result: {"success":false, error: "Model not found! (" + ctx.modelName + ")" } }
+        if (returnResult) return response
+        else return ctx.res.status(response.code).send(response.result)
+    }
 
+    //primaryKey 
     let primaryKey;
-    if (ctx.fieldKey) primaryKey = ctx.fieldKey;
+    if (ctx.primaryKey) primaryKey = ctx.primaryKey;
     else primaryKey = model.model.primaryKey;
 
-    //filter
-    criteria.filter = lib.blueHelper.getIdFilter(ctx.req, ctx.res, primaryKey);
-    if (ctx.addFilter) {
-        filter = lib.blueHelper.AddAndFilter(criteria.filter, ctx.addFilter);
-    }
+    //idParam from params req
+    let idParam
+    if (ctx.idParam) idParam = ctx.idParam;
+    else idParam = "id";
 
-    try {
-        var result = await model.find(criteria, { req: ctx.req, res: ctx.res });
-    }
-    catch (e) {
-        return ctx.res.status(500).send({"success":false, error: e });
-    }
+    ctx.filter = lib.blueHelper.getIdFilter(ctx.req, ctx.res, primaryKey, idParam);
 
-    if (result[0]) return ctx.res.send(result[0]);
-    else return ctx.res.send({});
+    var response = await lib.blueprints.find(ctx, true);
 
+    if (returnResult) {
+        return response;
+    } else {
+        if (response.code) {
+            ctx.res.status(response.code).send(response.result)
+        } else {
+            ctx.res.send(response[0]);
+        }
+    }
+    
 }
 
 

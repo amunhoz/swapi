@@ -73,14 +73,14 @@ util.emitEvent = function (modelName, moment, action, ctx) {
 }
 
 
-util.getIdFilter = function (req, res, keyName) {
-    if (!req.params[keyName]) {
-        res.status(400).end(keyName + ' not defined');
+util.getIdFilter = function (req, res, primaryKey, idParam) {
+    if (!req.params[idParam]) {
+        res.status(400).end(idParam + ' not defined');
         return;
     }
     let filter = {};
     //filter.where = {};
-    filter[keyName] = req.params[keyName];
+    filter[primaryKey] = req.params[idParam];
     return filter;
 };
 

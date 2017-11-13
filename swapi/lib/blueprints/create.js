@@ -1,11 +1,15 @@
 'use strict';
 
-var func = async function (ctx) {
+var func = async function (ctx, returnResult) {
 	//ctx = {modelName:modname , req: req, res: res, defaults: {field1:"lalal"} } 
-
+    var response = {};
     //getting model
     let model = swapi.imodels[ctx.modelName.toLowerCase()];
-    if (!model) return ctx.res.status(500).send({ "success": false, error: "Model not found! (" + ctx.modelName + ")" })
+    if (!model) {
+        response = {code:500, result: {"success":false, error: "Model not found! (" + ctx.modelName + ")" } }
+        if (returnResult) return response
+        else return ctx.res.status(response.code).send(response.result)
+    }
     
     let data = ctx.req.body;
 
@@ -19,10 +23,13 @@ var func = async function (ctx) {
         var result = await model.create(data, { req: ctx.req, res: ctx.res });
 	}
 	catch (e) {
-        return ctx.res.status(500).send({"success":false, error: e })
+        response = {code:500, result: {"success":false, error: e } }
+        if (returnResult) return response
+        else return ctx.res.status(response.code).send(response.result)
 	}
-
-    ctx.res.send(result);
+    if (returnResult) return result
+    else return ctx.res.send(result)
+    
 }
 
 
