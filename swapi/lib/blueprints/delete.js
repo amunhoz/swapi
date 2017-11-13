@@ -2,13 +2,18 @@
 
 var func = async function (ctx, returnResult) {
 	//ctx = {modelName:modname , req: req, res: res, filter: filter}
-	
+    
+    //----------------------------------------------------------------------------------------------------------
+    //checking model
     let model = swapi.imodels[ctx.modelName.toLowerCase()];
     if (!model) {
         response = {code:500, result: {"success":false, error: "Model not found! (" + ctx.modelName + ")" } }
         if (returnResult) return response
         else return ctx.res.status(response.code).send(response.result)
     }
+
+    //----------------------------------------------------------------------------------------------------------
+    //defining criteria
 
     //primaryKey 
     let primaryKey;
@@ -21,12 +26,15 @@ var func = async function (ctx, returnResult) {
     else idParam = "id";
     
     let criteria = {}
-    //filter
+
+    //get filter from res
     criteria.filter = lib.blueHelper.getIdFilter(ctx.req, ctx.res, primaryKey, idParam);
     if (ctx.filter) criteria.filter  = ctx.filter;
     if (ctx.addFilter) criteria.filter  = lib.blueHelper.AddAndFilter(criteria.filter, ctx.addFilter);
     
 
+    //----------------------------------------------------------------------------------------------------------
+    //execute
 	try {
         var result = await model.delete(criteria.filter,  { req: ctx.req, res: ctx.res });
 	}
@@ -38,6 +46,36 @@ var func = async function (ctx, returnResult) {
         }
     }
     
+    //----------------------------------------------------------------------------------------------------------
+    //suport for sub itens 
+    if (ctx.subItens && result[0]) {
+        //getting model
+        let smodel = swapi.imodels[ctx.subItens.modelName];
+        if (!smodel) {
+            response = {code:500, result: {"success":false, error: "Model for subitens not found! (" + ctx.subItens.modelName + ")" } }
+            if (returnResult) return response
+            else return ctx.res.status(response.code).send(response.result)
+        }
+
+        let scriteria = {};
+        let pprimaryKey = model.model.primaryKey;
+        scriteria[ctx.subItens.parentField] = result[0][pprimaryKey];
+        
+        // delete at once
+        try {
+            var sresult = await model.delete(scriteria, { req: ctx.req, res: ctx.res });
+        }
+        catch (e) {
+            response = {code:500, result: {"success":false, error: e } }
+            if (returnResult) return response
+            else return ctx.res.status(response.code).send(response.result)
+        }
+        result[0][ctx.subItens.itemName] = sresult;
+        
+    }
+
+    //----------------------------------------------------------------------------------------------------------
+    //return results
     if (result[0]) {
         if (returnResult) return result[0]
         else return ctx.res.send(result[0])

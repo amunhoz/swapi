@@ -3,7 +3,8 @@
 var func = async function (ctx, returnResult) {
 	//ctx = {modelName:modname , req: req, res: res, defaults: {field1:"lalal"} } 
     var response = {};
-    //getting model
+    //----------------------------------------------------------------------------------------------------------
+    //checking model
     let model = swapi.imodels[ctx.modelName.toLowerCase()];
     if (!model) {
         response = {code:500, result: {"success":false, error: "Model not found! (" + ctx.modelName + ")" } }
@@ -11,6 +12,8 @@ var func = async function (ctx, returnResult) {
         else return ctx.res.status(response.code).send(response.result)
     }
     
+    //----------------------------------------------------------------------------------------------------------
+    //getting data
     let data = ctx.req.body;
 
     if (ctx.defaults) {
@@ -18,7 +21,19 @@ var func = async function (ctx, returnResult) {
             data[item] = ctx.defaults[item];
         }
     }
-	
+    
+    //----------------------------------------------------------------------------------------------------------
+    //suport for sub itens 
+    var dataItens = [];
+    if (ctx.subItens) {
+        if (data[ctx.subItens.itemName]) {
+            dataItens = data[ctx.subItens.itemName];
+            delete data[ctx.subItens.itemName];
+        }
+    }
+    
+    //----------------------------------------------------------------------------------------------------------
+    //execute main command
 	try {
         var result = await model.create(data, { req: ctx.req, res: ctx.res });
 	}
@@ -26,7 +41,40 @@ var func = async function (ctx, returnResult) {
         response = {code:500, result: {"success":false, error: e } }
         if (returnResult) return response
         else return ctx.res.status(response.code).send(response.result)
-	}
+    }
+    
+    //----------------------------------------------------------------------------------------------------------
+    //suport for sub itens 
+    if (ctx.subItens && result) {
+        //getting model
+        let smodel = swapi.imodels[ctx.subItens.modelName];
+        if (!smodel) {
+            response = {code:500, result: {"success":false, error: "Model for subitens not found! (" + ctx.subItens.modelName + ")" } }
+            if (returnResult) return response
+            else return ctx.res.status(response.code).send(response.result)
+        }
+
+        let defaults = {};
+        let pprimaryKey = model.model.primaryKey;
+        defaults[ctx.subItens.parentField] = result[pprimaryKey];
+        result[ctx.subItens.itemName] = [];
+
+        for(var i = 0; i < dataItens.length;i++){
+            try {
+                var sresult = await model.create(dataItens[i], { req: ctx.req, res: ctx.res });
+            }
+            catch (e) {
+                response = {code:500, result: {"success":false, error: e } }
+                if (returnResult) return response
+                else return ctx.res.status(response.code).send(response.result)
+            }
+            result[ctx.subItens.itemName].push(sresult);
+        }
+        
+    }
+
+    //----------------------------------------------------------------------------------------------------------
+    //return results
     if (returnResult) return result
     else return ctx.res.send(result)
     

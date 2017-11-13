@@ -5,6 +5,18 @@ var find = async function (ctx, returnResult) {
     var response = {};
     let criteria = {};
 
+    //----------------------------------------------------------------------------------------------------------
+    //checking model
+    let model = swapi.imodels[ctx.modelName];
+    if (!model) {
+        response = {code:500, result: {"success":false, error: "Model not found! (" + ctx.modelName + ")" } }
+        if (returnResult) return response
+        else return ctx.res.status(response.code).send(response.result)
+    }
+
+    //----------------------------------------------------------------------------------------------------------
+    //defining criteria
+
     //filter
     if (ctx.req.query.filter) criteria.filter  = lib.blueHelper.CheckFilterJson(ctx.req.query.filter);
     else if (ctx.filter) criteria.filter  = ctx.filter;
@@ -23,14 +35,8 @@ var find = async function (ctx, returnResult) {
     else if (ctx.sort) criteria.sort  = ctx.sort;
 
 
-    //getting model
-    let model = swapi.imodels[ctx.modelName];
-    if (!model) {
-        response = {code:500, result: {"success":false, error: "Model not found! (" + ctx.modelName + ")" } }
-        if (returnResult) return response
-        else return ctx.res.status(response.code).send(response.result)
-    }
-    
+    //----------------------------------------------------------------------------------------------------------
+    //executing    
     try {
         var result = await model.find(criteria, { req: ctx.req, res: ctx.res });
     }
@@ -40,8 +46,10 @@ var find = async function (ctx, returnResult) {
         else return ctx.res.status(response.code).send(response.result)
     }
     
-    if (ctx.subItens) {
-        //getting model
+    //----------------------------------------------------------------------------------------------------------
+    //suport for sub itens 
+    if (ctx.subItens && result[0]) {
+        //checking model
         let smodel = swapi.imodels[ctx.subItens.modelName];
         if (!smodel) {
             response = {code:500, result: {"success":false, error: "Model for subitens not found! (" + ctx.subItens.modelName + ")" } }
@@ -51,7 +59,7 @@ var find = async function (ctx, returnResult) {
 
         let scriteria = {};
         let pprimaryKey = model.model.primaryKey;
-
+        //getting subitens from each result
         for(var i = 0; i < result.length;i++){
             scriteria[ctx.subItens.parentField] = result[i][pprimaryKey];
             try {
@@ -67,6 +75,8 @@ var find = async function (ctx, returnResult) {
         
     }
 
+    //----------------------------------------------------------------------------------------------------------
+    //return results
     if (result[0]){
         if (returnResult) return result
         else return ctx.res.send(result)
