@@ -3,6 +3,10 @@
 // the last command replace others before... like you can allow to all /products* and deny to /products/itens* later
 // you can define multiple groups  "group": "user,operator,admin"
 // BE CAREFUL: The sequence of the config define the permission replacement
+// you can check permissions with 
+//  swapi.lib.permission.check(req, groupName) == "allow"
+//  req.route.permissions[groupName] ==  "allow"
+
 
 [ // groups 
   
@@ -13,7 +17,7 @@
         {  
           "resource": "/*",
           "methods": ["POST","GET", "PUT"],
-          "action": "allow"
+          "action": "owner" //allow other kind of permissions
         },
         {  
           "resource": "/products*",
