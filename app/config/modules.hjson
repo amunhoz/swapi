@@ -86,6 +86,7 @@
     "priority": 15
   },
 
+
   //===================================================================================
   //create a api test interface on http://host:port/explorer
   "swagger-ui-express": {
@@ -129,5 +130,22 @@
     "enabled": true,
     "priority": 1000
   }
+
+
+  //===================================================================================
+  //custom express errors with json response
+  "express-error": {
+    "enabled": true,
+    "priority": 1001
+  }
+
+
+  //===================================================================================
+  //load permissions to routes
+  "permissions": {
+    "enabled": true,
+    "priority": 1001
+  }
+  
 
 }

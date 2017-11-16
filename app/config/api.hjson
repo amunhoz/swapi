@@ -22,6 +22,7 @@
     "swaggerFile": "config/swagger20.json",
     "modulesFile": "config/modules.hjson",
     "connections": "config/connections.js",
+	"permissions": "config/permissions.json",
     "routesApi": "./routesApi",
     "routesDir": "./routesDir",
     "security": "./security",

@@ -130,7 +130,7 @@ var func = async function (ctx, returnResult) {
                 
             }
             catch (e) {
-                response = {code:500, result: {"success":false, error: e } }
+                response = {code:500, result: {"success":false, error: JSON.stringify(e) } }
                 if (returnResult) return response
                 else return ctx.res.status(response.code).send(response.result)
             }

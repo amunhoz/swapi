@@ -1,0 +1,64 @@
+// Permissions configuration
+// be default all routes without a configuration are set to deny
+// the last command replace others before... like you can allow to all /products* and deny to /products/itens* later
+// you can define multiple groups  "group": "user,operator,admin"
+// BE CAREFUL: The sequence of the config define the permission replacement
+
+[ // groups 
+  
+  // ===========================================================================================
+  //group 1
+  {"group": "user",
+  "permissions": [
+        {  
+          "resource": "/*",
+          "methods": ["POST","GET", "PUT"],
+          "action": "allow"
+        },
+        {  
+          "resource": "/products*",
+          "methods": ["POST","GET", "PUT"],
+          "action": "deny"  // this one will replace the allow permission in previous item
+        }
+      ]
+  }
+
+
+  // ===========================================================================================
+  // group 2
+  ,{"group": "operator",
+  "permissions": [
+      //permission 1
+        {  
+          "resource": "/users*",
+          "methods": ["POST","GET", "PUT"],
+          "action": "deny"
+        },
+       {  
+          "resource": "/users/:id",   //express route format
+          "methods": ["POST","GET", "PUT"],
+          "action": "allow"  // this one will replace the allow permission in previous item
+        }
+      ]
+  }
+  
+   // ==========================================================================================
+   //group 2
+   ,{"group": "operatorx",
+    "permissions": [
+        //permission 1
+          {  
+            "resource": "/users*",      //wildcards are allowed
+            "methods": ["POST","GET", "PUT"],
+            "action": "allow"
+          },
+         {  
+            "resource": "/users/:id",   //express route format
+            "methods": ["POST","GET", "PUT"],
+            "action": "allow"
+          }
+        ]
+    }
+  
+
+] //end groups
