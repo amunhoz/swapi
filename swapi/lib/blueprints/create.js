@@ -56,6 +56,11 @@ var func = async function (ctx, returnResult) {
         }
     }
     
+    //convert object to string
+    for (var itens in data) {
+        
+     }
+
     //----------------------------------------------------------------------------------------------------------
     //execute main command
 	try {

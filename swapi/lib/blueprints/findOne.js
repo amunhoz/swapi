@@ -52,12 +52,6 @@ var findOne = async function (ctx, returnResult) {
     //get criteria
     filter = lib.blueHelper.getIdFilter(ctx.req, ctx.res, primaryKey, idParam);
 
-    //filter
-    if (ctx.query.filter) filter  = ctx.query.filter;
-    if (ctx.addFilter) filter  = lib.blueHelper.AddAndFilter(filter, ctx.addFilter);
-
-    ctx.filter = filter;
-
     //----------------------------------------------------------------------------------------------------------
     //use other blueprint to main command
     var response = await lib.blueprints.find(ctx, true);
