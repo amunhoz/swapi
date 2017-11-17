@@ -86,7 +86,14 @@
     "priority": 15
   },
 
-
+ //===================================================================================
+  //template system for /views
+  // use swapi.render(tplname);
+  "swig": {
+    "enabled": true,
+    "priority": 998
+  },
+  
   //===================================================================================
   //create a api test interface on http://host:port/explorer
   "swagger-ui-express": {
@@ -108,13 +115,7 @@
     "priority": 999
   },
 
-  //===================================================================================
-  //template system for /views
-  // use swapi.render(tplname);
-  "marko": {
-    "enabled": true,
-    "priority": 999
-  },
+ 
 
   //===================================================================================
   //build routes based on swagger documentation on routesApi
