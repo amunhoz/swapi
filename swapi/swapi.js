@@ -34,9 +34,10 @@ exports.start = async function (apiFile) {
 
 
 async function bootApi() {
-	const app = express();
+    const app = express();
 	var server = http.createServer(app);
     global.app = app;
+    
 
 	//load libraries
 	var requireDir = require('require-dir');

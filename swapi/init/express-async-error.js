@@ -27,7 +27,9 @@ module.exports = {
                 if (routePromise.catch) {
                     routePromise.catch(err => {
                         sysLog.error(err);
-                        res.status(500).send({ sucess: false, error: "internal server error" });
+                        console.log(err);
+                        let resp = { sucess: false, error: "internal server error - 1", details: {message: err.message, stack: err.stack} }
+                        res.status(500).send(resp);
                     });
                     //routePromise.catch(err => next(err));
                 }
@@ -36,7 +38,8 @@ module.exports = {
 
         function treatError(err) {
             sysLog.error(err);
-            res.status(500).send({ sucess: false, error: "internal server error" });
+            let resp = { sucess: false, error: "internal server error - 2", details: {message: err.message, stack: err.stack} }
+            res.status(500).send(resp);
         }
 
         console.log("(init) Express async errors loaded");
