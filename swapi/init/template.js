@@ -10,7 +10,10 @@ module.exports = {
 		
         var renderMid = function (req, res, next) {
             var renderView = function (file, data) {
-
+				if (swapi.events && this.useEvents) {
+					swapi.events.emit(`views.${file}.before`, {view: file, data: data, req: req, res:res} );
+				}
+				
 				let propName= file.replace("/","__").replace('\\','__');
 				if (!templates[propName]) {
 					let fullName = path.resolve (swapi.config.locations.views + "/" + file + ".ejs");
@@ -26,8 +29,13 @@ module.exports = {
 						return false;
 					}
 				}
-				res.end( templates[propName](data) );
+				let result = templates[propName](data);
+				if (swapi.events && this.useEvents) {
+					swapi.events.emit(`views.${file}.after`, {view: file, data: data, req: req, res:res, result: result} );
+				}
+				res.end( result );
 			};			
+			
             res.render = renderView;
 			next();
 			

@@ -69,7 +69,7 @@ util.emitEvent = function (modelName, moment, action, ctx) {
 	ctx.action = action;
 	ctx.moment = moment;
 	ctx.modelName = modelName;
-	swapi.events.emit(`${moment}.${modelName}.${action}`, ctx);
+	swapi.events.emit(`models.${modelName}.${moment}.${action}`, ctx);
 }
 
 
