@@ -53,9 +53,8 @@ var func = async function (ctx, returnResult) {
         var result = await model.count(criteria,  { req: ctx.req, res: ctx.res });
 	}
 	catch (e) {
-            response = {code:500, result: {"success":false, error: JSON.stringify(e) } }
-            if (returnResult) return response
-            else return ctx.res.status(response.code).send(response.result)
+        throw Error(e);
+        return;
     }
     
     //----------------------------------------------------------------------------------------------------------

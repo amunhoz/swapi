@@ -83,9 +83,8 @@ var func = async function (ctx, returnResult) {
             var sresult = await model.delete(scriteria, { req: ctx.req, res: ctx.res });
         }
         catch (e) {
-            response = {code:500, result: {"success":false, error: JSON.stringify(e) } }
-            if (returnResult) return response
-            else return ctx.res.status(response.code).send(response.result)
+            throw Error(e);
+            return;
         }
         result[0][ctx.subItens.itemName] = sresult;
         

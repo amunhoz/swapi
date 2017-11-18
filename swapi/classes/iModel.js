@@ -17,28 +17,34 @@ iModel.prototype.find = async function (criteria, ctx) {
     if (!criteria.filter) criteria.filter = {};
     if(!ctx) ctx = {};
     //emitting event BEFORE
-    if (swapi.events && this.useEvents) {
-        ctx.model = this.model;
-        ctx.criteria = criteria;
-        global.lib.blueHelper.emitEvent(this.modelName, "before", "find", ctx);
+    if (global.events && this.useEvents) {
+        global.lib.blueHelper.emitEvent(this.modelName, "before", "find", { model: this.model, criteria: criteria, ctx: ctx });
         if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
     }
 
-    try {
-        var query = this.model.find(criteria.filter);
-        if (criteria.sort) query.sort(criteria.sort);
-        if (criteria.limit) query.limit(criteria.limit);
-        if (criteria.skip) query.skip(criteria.skip);
-        var result = await promisefyQueryExec(query);
-        
+    
+    var query = this.model.find(criteria.filter);
+    if (criteria.sort) query.sort(criteria.sort);
+    if (criteria.limit) query.limit(criteria.limit);
+    if (criteria.skip) query.skip(criteria.skip);
+    if (criteria.populate) {
+        if (Array.isArray(criteria.populate)) {
+            //populate an array of modelnames
+            criteria.populate.map(function (element) {
+                query.populate(element)
+                });
+        } 
+            // populate all
+        else if (criteria.populate.toLowerCase() == "all")  query.populateAll();
+            // populate only one model
+        else  query.populate(criteria.populate);
     }
-    catch (e) {
-        throw Error(e);
-    }
+    
+    var result = await promisefyQueryExec(query);
+
     //emitting event AFTER
-    if (swapi.events && this.useEvents) {
-        ctx.result = result;
-        global.lib.blueHelper.emitEvent(this.modelName, "after", "find", ctx);
+    if (global.events && this.useEvents) {
+        global.lib.blueHelper.emitEvent(ctx.modelName, "after", "find", { model: this.model, criteria: criteria, ctx: ctx, result: result });
         if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
     }
 
@@ -54,23 +60,16 @@ iModel.prototype.count = async function (criteria, ctx) {
     if(!ctx) ctx = {};
 
     //emitting event BEFORE
-    if (swapi.events && this.useEvents) {
-        ctx.model = this.model;
-        ctx.criteria = criteria;
-        global.lib.blueHelper.emitEvent(this.modelName, "before", "find", ctx);
+    if (global.events && this.useEvents) {
+        global.lib.blueHelper.emitEvent(this.modelName, "before", "find", { model: this.model, criteria: criteria, ctx: ctx });
         if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
     }
 
-    try {
-        var result = await this.model.count(criteria.filter);
-    }
-    catch (e) {
-        throw Error(e);
-    }
+    var result = await this.model.count(criteria.filter);
+
     //emitting event AFTER
-    if (swapi.events && this.useEvents) {
-        ctx.result = result;
-        global.lib.blueHelper.emitEvent(this.modelName, "after", "find", ctx);
+    if (global.events && this.useEvents) {
+        global.lib.blueHelper.emitEvent(ctx.modelName, "after", "find", { model: this.model, criteria: criteria, ctx: ctx, result: result });
         if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
     }
 
@@ -88,25 +87,18 @@ iModel.prototype.findOne = async function (id, ctx) {
     criteria.filter[this.model.primaryKey] = id;
 
     //emitting event BEFORE
-    if (swapi.events && this.useEvents) {
-        ctx.model = this.model;
-        ctx.criteria = criteria;
-        global.lib.blueHelper.emitEvent(this.modelName, "before", "find", ctx);
+    if (global.events && this.useEvents) {
+        global.lib.blueHelper.emitEvent(this.modelName, "before", "find", { model: this.model, criteria: criteria, ctx: ctx });
         if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
     }
 
-    try {
-        var query = this.model.find(criteria.filter);
-        var result = await promisefyQueryExec(query);
 
-    }
-    catch (e) {
-        throw Error(e);
-    }
+    var query = this.model.find(criteria.filter);
+    var result = await promisefyQueryExec(query);
+
     //emitting event AFTER
-    if (swapi.events && this.useEvents) {
-        ctx.result = result;
-        global.lib.blueHelper.emitEvent(this.modelName, "after", "find", ctx);
+    if (global.events && this.useEvents) {
+        global.lib.blueHelper.emitEvent(ctx.modelName, "after", "find", { model: this.model, criteria: criteria, ctx: ctx, result: result });
         if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
     }
     if (result && result[0]) return result[0];
@@ -127,24 +119,15 @@ iModel.prototype.update = async function (idOrCriteria, data, ctx) {
     }
 
     //emitting event BEFORE
-    if (swapi.events && this.useEvents) {
-        ctx.model = this.model;
-        ctx.criteria = criteria;
-        ctx.data = data;
-        global.lib.blueHelper.emitEvent(this.modelName, "before", "update", ctx);
+    if (global.events && this.useEvents) {
+        global.lib.blueHelper.emitEvent(this.modelName, "before", "update", { model: this.model, criteria: criteria, ctx: ctx, data: data });
         if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
     }
 
-    try {
-        var result = await this.model.update(criteria.filter, data);
-    }
-    catch (e) {
-        throw Error(e);
-    }
+    var result = await this.model.update(criteria.filter, data);
     //emitting event AFTER
-    if (swapi.events && this.useEvents) {
-        ctx.result = result;
-        global.lib.blueHelper.emitEvent(this.modelName, "after", "update", ctx);
+    if (global.events && this.useEvents) {
+        global.lib.blueHelper.emitEvent(this.modelName, "after", "update", { model: this.model, criteria: criteria, ctx: ctx, data: data, result: result });
         if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
     }
 
@@ -156,25 +139,17 @@ iModel.prototype.update = async function (idOrCriteria, data, ctx) {
 
 iModel.prototype.create = async function (data, ctx) {
     if(!ctx) ctx = {};
-
+    
     //emitting event BEFORE
-    if (swapi.events && this.useEvents) {
-        ctx.model = this.model;
-        ctx.data = data;
-        global.lib.blueHelper.emitEvent(this.modelName, "before", "create", ctx);
+    if (global.events && this.useEvents) {
+        global.lib.blueHelper.emitEvent(this.modelName, "before", "create", { model: this.model, ctx: ctx, data: data });
         if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
     }
 
-    try {
-        var result = await this.model.create(data);
-    }
-    catch (e) {
-        throw Error(e);
-    }
+    var result = await this.model.create(data);
     //emitting event AFTER
-    if (swapi.events && this.useEvents) {
-        ctx.result = result;
-        global.lib.blueHelper.emitEvent(this.modelName, "after", "create", ctx);
+    if (global.events && this.useEvents) {
+        global.lib.blueHelper.emitEvent(this.modelName, "after", "create", { model: this.model, ctx: ctx, data: data, result: result });
         if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
     }
 
@@ -197,24 +172,16 @@ iModel.prototype.delete = async function (idOrCriteria, ctx) {
     }
 
     //emitting event BEFORE
-    if (swapi.events && this.useEvents) {
-        ctx.model = this.model;
-        ctx.criteria = criteria;
-        global.lib.blueHelper.emitEvent(this.modelName, "before", "delete", ctx);
+    if (global.events && this.useEvents) {
+        global.lib.blueHelper.emitEvent(this.modelName, "before", "delete", { model: this.model, criteria: criteria, ctx: ctx });
         if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
     }
 
-    try {
-        var result = await this.model.destroy(criteria.filter);
-    }
-    catch (e) {
-        throw Error(e);
-    }
-
+    var result = await this.model.destroy(criteria.filter);
+    
     //emitting event AFTER
-    if (swapi.events && this.useEvents) {
-        ctx.result = result;
-        global.lib.blueHelper.emitEvent(this.modelName, "after", "delete", ctx);
+    if (global.events && this.useEvents) {
+        global.lib.blueHelper.emitEvent(this.modelName, "after", "delete", { model: this.model, criteria: criteria, ctx: ctx, result: result });
         if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
     }
     return result;

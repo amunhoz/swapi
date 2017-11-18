@@ -81,11 +81,8 @@ var func = async function (ctx, returnResult) {
         var result = await model.update(criteria, data, { req: ctx.req, res: ctx.res });
     }
     catch (e) {
-        if (!model) {
-            response = {code:500, result: {"success":false, error: "Model not found! (" + ctx.modelName + ")" } }
-            if (returnResult) return response
-            else return ctx.res.status(response.code).send(response.result)
-        }
+        throw Error(e);
+        return;
     }
 
     //----------------------------------------------------------------------------------------------------------

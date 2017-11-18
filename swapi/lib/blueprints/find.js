@@ -20,6 +20,9 @@ var find = async function (ctx, returnResult) {
             primaryKey: "id"
         }
     }
+    It auto check query parameters:
+        filter - filter in json format (see waterline doc)
+        pupulate - the presence of the parameter will trigger the populate of relations
     */
     var response = {};
     let criteria = {};
@@ -52,19 +55,13 @@ var find = async function (ctx, returnResult) {
     //sort
     if (query.sort) criteria.sort  = query.sort;
     else if (ctx.sort) criteria.sort  = ctx.sort;
-
+    
+    if (query.populate) criteria.populate  = query.populate;
 
     //----------------------------------------------------------------------------------------------------------
     //executing    
-    try {
-        var result = await model.find(criteria, { req: ctx.req, res: ctx.res });
-    }
-    catch (e) {
-        response = {code:500, result: {"success":false, error: JSON.stringify(e) } }
-        if (returnResult) return response
-        else return ctx.res.status(response.code).send(response.result)
-    }
-    
+    var result = await model.find(criteria, { req: ctx.req, res: ctx.res });
+       
     //----------------------------------------------------------------------------------------------------------
     //suport for sub itens 
     if (ctx.subItens && result[0]) {

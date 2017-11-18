@@ -28,7 +28,7 @@ module.exports = {
                     routePromise.catch(err => {
                         sysLog.error(err);
                         console.log(err);
-                        let resp = { sucess: false, error: "internal server error - 1", details: {message: err.message, stack: err.stack} }
+                        let resp = { sucess: false, error: {code:  999998, message: err.message, stack: err.stack} }
                         res.status(500).send(resp);
                     });
                     //routePromise.catch(err => next(err));
@@ -38,7 +38,7 @@ module.exports = {
 
         function treatError(err) {
             sysLog.error(err);
-            let resp = { sucess: false, error: "internal server error - 2", details: {message: err.message, stack: err.stack} }
+            let resp = { sucess: false ,error: {code: 999999, message: err.message, stack: err.stack} }
             res.status(500).send(resp);
         }
 

@@ -5,7 +5,9 @@ module.exports = {
       
         app.use(function (err, req, res, next) {
             if (err) {
-                res.status(err.status).send({"success":false, error: (err) })
+		let resp = { sucess: false, error: {code:  999997, message: err.message, stack: err.stack} }
+                res.status(err.status).send(resp);
+
             }
             next(err);
         })

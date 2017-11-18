@@ -56,20 +56,14 @@ var func = async function (ctx, returnResult) {
         }
     }
     
-    //convert object to string
-    for (var itens in data) {
-        
-     }
-
     //----------------------------------------------------------------------------------------------------------
     //execute main command
 	try {
         var result = await model.create(data, { req: ctx.req, res: ctx.res });
 	}
 	catch (e) {
-        response = {code:500, result: {"success":false, error: JSON.stringify(e) } }
-        if (returnResult) return response
-        else return ctx.res.status(response.code).send(response.result)
+        throw Error(e);
+        return;
     }
     
     //----------------------------------------------------------------------------------------------------------

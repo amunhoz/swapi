@@ -148,7 +148,13 @@ You can check additional parameters inside the code in \swapi\lib\blueprints\[op
 	 
 	
 	
-	
+GLOBAL ERROR HANDLING -
+-----------------------------------------------------------------------
+ There is a global error threatment with express..
+ To get better error messages:
+	• you DONT need to use try/cath
+	• always use await in front the async functions (blueprints, imodels, etc)
+
 	
 	
 	
