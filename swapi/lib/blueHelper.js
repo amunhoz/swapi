@@ -43,7 +43,7 @@ util.AddAndFilter = function (pfilter, criteria) {
     } else if (Object.keys(criteria).length==0) {
         return pfilter;
     }
-    
+
     if (!pfilter) {
         filter = {};
     } else {
@@ -96,10 +96,14 @@ util.mergeQuery = function (main, additional) {
         //remove itens not related
         if (whiteList.indexOf(key) < 0) continue;
         
+        /*  let it replace where for now and keep addFilter
         if (key == "where") {
             //merge where
             main['where'] = util.AddAndFilter(main['where'], additional['where'])
-        } else if (!main[key]) {
+            continue;
+        } */
+
+         if (!main[key]) {
             //do not replace main config
             main[key] = additional[key]
         }

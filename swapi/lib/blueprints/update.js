@@ -81,7 +81,7 @@ var func = async function (ctx, returnResult) {
     //----------------------------------------------------------------------------------------------------------
     // loop every item and check for update or create
     try {
-        var result = await model.update(query.where, data, { req: ctx.req, res: ctx.res });
+        var result = await model.update(query, data, { req: ctx.req, res: ctx.res });
     }
     catch (e) {
         throw Error(e);

@@ -55,7 +55,7 @@ var func = async function (ctx, returnResult) {
     //----------------------------------------------------------------------------------------------------------
     //execute
 	try {
-        var result = await model.delete(query.where,  { req: ctx.req, res: ctx.res });
+        var result = await model.delete(query,  { req: ctx.req, res: ctx.res });
 	}
 	catch (e) {
         if (!model) {

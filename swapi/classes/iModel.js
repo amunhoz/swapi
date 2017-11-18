@@ -25,16 +25,17 @@ iModel.prototype.find = async function (criteria, ctx) {
     
     var query = this.model.find(criteria);
     if (criteria.populate) {
-        if (Array.isArray(criteria.populate)) {
-            //populate an array of modelnames
-            criteria.populate.map(function (element) {
+        let popItens = criteria.populate.split(",")
+        if (popItens[0].toLowerCase() == "all") {
+            // populate all
+            query.populateAll();
+        }
+        else  {
+            //populate models with names
+            popItens.map(function (element) {
                 query.populate(element)
                 });
         } 
-            // populate all
-        else if (criteria.populate.toLowerCase() == "all")  query.populateAll();
-            // populate only one model
-        else  query.populate(criteria.populate);
         delete criteria.populate;
     }
     
