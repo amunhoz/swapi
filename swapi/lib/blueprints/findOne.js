@@ -9,7 +9,7 @@ var findOne = async function (ctx, returnResult) {
         res: res,                           // response object
         addFilter: addFilter,               // additional filter
         query: {                            // will replace parameters in query (sort, limit, skip, filter)
-            filter: {field: "value"},        //replace the filter
+            where: {field: "value"},        //replace the filter
         },
         subItens:{
             modelName : "model_itens", //model name for subitens
@@ -48,15 +48,15 @@ var findOne = async function (ctx, returnResult) {
     else idParam = "id";
 
 
-    var filter = {};
-    //get criteria
-    filter = lib.blueHelper.getIdFilter(ctx.req, ctx.res, primaryKey, idParam);
-
-    //filter
-    if (ctx.query.filter) filter  = ctx.query.filter;
-    if (ctx.addFilter) filter  = lib.blueHelper.AddAndFilter(filter, ctx.addFilter);
-
-    ctx.filter = filter;
+   //----------------------------------------------------------------------------------------------------------
+    //defining where clause
+    let query = {}
+    
+    //get filter from res
+    query.where = lib.blueHelper.getIdFilter(ctx.req, ctx.res, primaryKey, idParam);
+    if (ctx.query && ctx.query.where) query.where = lib.blueHelper.mergeQuery(query.where, ctx.query.where);
+    if (ctx.addFilter) query.where  = lib.blueHelper.AddAndFilter(query.where, ctx.addFilter)
+    ctx.query = query;
 
     //----------------------------------------------------------------------------------------------------------
     //use other blueprint to main command

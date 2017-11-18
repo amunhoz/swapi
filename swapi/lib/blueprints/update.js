@@ -8,7 +8,7 @@ var func = async function (ctx, returnResult) {
         res: res,                           // response object
         addFilter: addFilter,               // additional filter
         query: {                            // will replace parameters in query (sort, limit, skip, filter)
-            filter: {field: "value"},        //replace the filter
+            where: {field: "value"},        //replace the filter
             sort: sort,                     // Field ASC, reorder
             limit: limit,                   // limit itens
             skip: skip                      // skip itens
@@ -37,8 +37,7 @@ var func = async function (ctx, returnResult) {
 
     //----------------------------------------------------------------------------------------------------------
     //defining criteria
-    let criteria = {};
-    
+        
     //primaryKey 
     let primaryKey;
     if (ctx.primaryKey) primaryKey = ctx.primaryKey;
@@ -49,10 +48,14 @@ var func = async function (ctx, returnResult) {
     if (ctx.idParam) idParam = ctx.idParam;
     else idParam = "id";
     
-    //filter
-    criteria.filter = lib.blueHelper.getIdFilter(ctx.req, ctx.res, primaryKey, idParam);
-    if (ctx.filter) criteria.filter  = ctx.filter;
-    if (ctx.addFilter) criteria.filter  = lib.blueHelper.AddAndFilter(criteria.filter, ctx.addFilter);
+  //----------------------------------------------------------------------------------------------------------
+    //defining where clause
+    let query = {}
+    
+    //get filter from res
+    query.where = lib.blueHelper.getIdFilter(ctx.req, ctx.res, primaryKey, idParam);
+    if (ctx.query && ctx.query.where) query.where = lib.blueHelper.mergeQuery(query.where, ctx.query.where);
+    if (ctx.addFilter) query.where  = lib.blueHelper.AddAndFilter(query.where, ctx.addFilter)
 
     
     //----------------------------------------------------------------------------------------------------------
@@ -78,7 +81,7 @@ var func = async function (ctx, returnResult) {
     //----------------------------------------------------------------------------------------------------------
     // loop every item and check for update or create
     try {
-        var result = await model.update(criteria, data, { req: ctx.req, res: ctx.res });
+        var result = await model.update(query.where, data, { req: ctx.req, res: ctx.res });
     }
     catch (e) {
         throw Error(e);
@@ -102,6 +105,7 @@ var func = async function (ctx, returnResult) {
         var sresult;
         var currentItens = [];
         let scriteria = {};
+        scriteria.where = {};
 
         //==============================================================================================
         // loop every item and check for update or create
@@ -113,8 +117,8 @@ var func = async function (ctx, returnResult) {
                 if (dataItens[i][sprimaryKey] && dataItens[i][sprimaryKey] > 0 ) {
                     //update                   
                     let itemId = dataItens[i][ctx.subItens.primaryKey]; 
-                    scriteria[sprimaryKey] = itemId;
-                    sresult = await model.update(scriteria, dataItens[i], { req: ctx.req, res: ctx.res });
+                    scriteria.where[sprimaryKey] = itemId;
+                    sresult = await smodel.update(scriteria, dataItens[i], { req: ctx.req, res: ctx.res });
                     if (sresult[0]) result[0][ctx.subItens.itemName].push(sresult[0]);
                     currentItens.push(itemId);
 
@@ -137,7 +141,7 @@ var func = async function (ctx, returnResult) {
         
         //==============================================================================================
         //delete all except the current itens
-        scriteria[sprimaryKey] = {$nin : currentItens}
+        scriteria.where[sprimaryKey] = {$nin : currentItens}
         try {
             var result = await model.delete(scriteria,  { req: ctx.req, res: ctx.res });
         }

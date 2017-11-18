@@ -6,13 +6,6 @@ var func = async function (ctx, returnResult) {
         modelName:modname,                  //model name for the operation
         req: req,                           // request object
         res: res,                           // response object
-        addFilter: addFilter,               // additional filter
-        query: {                            // will replace parameters in query (sort, limit, skip, filter)
-            filter: {field: "value"},        //replace the filter
-            sort: sort,                     // Field ASC, reorder
-            limit: limit,                   // limit itens
-            skip: skip                      // skip itens
-        },
         subItens:{
             modelName : "model_itens", //model name for subitens
             parentField : "model_id",  // parent id field name
@@ -84,7 +77,7 @@ var func = async function (ctx, returnResult) {
 
         for(var i = 0; i < dataItens.length;i++){
             try {
-                var sresult = await model.create(dataItens[i], { req: ctx.req, res: ctx.res });
+                var sresult = await smodel.create(dataItens[i], { req: ctx.req, res: ctx.res });
             }
             catch (e) {
                 response = {code:500, result: {"success":false, error: JSON.stringify(e) } }

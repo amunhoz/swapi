@@ -14,7 +14,7 @@ function iModel(modelName, useEvents) {
 //FIND
 iModel.prototype.find = async function (criteria, ctx) {
     //criteria {filter: {}, sort:"", limit:1, skip:10}
-    if (!criteria.filter) criteria.filter = {};
+    
     if(!ctx) ctx = {};
     //emitting event BEFORE
     if (global.events && this.useEvents) {
@@ -23,10 +23,7 @@ iModel.prototype.find = async function (criteria, ctx) {
     }
 
     
-    var query = this.model.find(criteria.filter);
-    if (criteria.sort) query.sort(criteria.sort);
-    if (criteria.limit) query.limit(criteria.limit);
-    if (criteria.skip) query.skip(criteria.skip);
+    var query = this.model.find(criteria);
     if (criteria.populate) {
         if (Array.isArray(criteria.populate)) {
             //populate an array of modelnames
@@ -38,6 +35,7 @@ iModel.prototype.find = async function (criteria, ctx) {
         else if (criteria.populate.toLowerCase() == "all")  query.populateAll();
             // populate only one model
         else  query.populate(criteria.populate);
+        delete criteria.populate;
     }
     
     var result = await promisefyQueryExec(query);
@@ -55,8 +53,6 @@ iModel.prototype.find = async function (criteria, ctx) {
 //COUNT
 
 iModel.prototype.count = async function (criteria, ctx) {
-    //criteria {filter: {}, sort:"", limit:1}
-    if (!criteria.filter) criteria.filter = {};
     if(!ctx) ctx = {};
 
     //emitting event BEFORE
@@ -65,7 +61,7 @@ iModel.prototype.count = async function (criteria, ctx) {
         if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
     }
 
-    var result = await this.model.count(criteria.filter);
+    var result = await this.model.count(criteria);
 
     //emitting event AFTER
     if (global.events && this.useEvents) {
@@ -80,11 +76,15 @@ iModel.prototype.count = async function (criteria, ctx) {
 //==========================================================================================
 //FINDONE
 
-iModel.prototype.findOne = async function (id, ctx) {
+iModel.prototype.findOne = async function (idOrCriteria, ctx) {
+
     if(!ctx) ctx = {};
     let criteria = {};
-    criteria.filter = {};
-    criteria.filter[this.model.primaryKey] = id;
+    if ((!!idOrCriteria) && (idOrCriteria.constructor === Object)) {
+        criteria = idOrCriteria;
+    } else {
+        criteria[this.model.primaryKey] = idOrCriteria;
+    }
 
     //emitting event BEFORE
     if (global.events && this.useEvents) {
@@ -93,7 +93,7 @@ iModel.prototype.findOne = async function (id, ctx) {
     }
 
 
-    var query = this.model.find(criteria.filter);
+    var query = this.model.find(criteria);
     var result = await promisefyQueryExec(query);
 
     //emitting event AFTER
@@ -112,10 +112,9 @@ iModel.prototype.update = async function (idOrCriteria, data, ctx) {
     if(!ctx) ctx = {};
     let criteria = {};
     if ((!!idOrCriteria) && (idOrCriteria.constructor === Object)) {
-        criteria.filter = idOrCriteria.filter;
+        criteria = idOrCriteria;
     } else {
-        criteria.filter = {};
-        criteria.filter[this.model.primaryKey] = idOrCriteria;
+        criteria[this.model.primaryKey] = idOrCriteria;
     }
 
     //emitting event BEFORE
@@ -124,7 +123,7 @@ iModel.prototype.update = async function (idOrCriteria, data, ctx) {
         if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
     }
 
-    var result = await this.model.update(criteria.filter, data);
+    var result = await this.model.update(criteria, data);
     //emitting event AFTER
     if (global.events && this.useEvents) {
         global.lib.blueHelper.emitEvent(this.modelName, "after", "update", { model: this.model, criteria: criteria, ctx: ctx, data: data, result: result });
@@ -162,13 +161,11 @@ iModel.prototype.create = async function (data, ctx) {
 
 iModel.prototype.delete = async function (idOrCriteria, ctx) {
     if(!ctx) ctx = {};
-    
     let criteria = {};
     if ((!!idOrCriteria) && (idOrCriteria.constructor === Object)) {
-        criteria.filter = idOrCriteria;
+        criteria = idOrCriteria;
     } else {
-        criteria.filter = {};
-        criteria.filter[this.model.primaryKey] = idOrCriteria;
+        criteria[this.model.primaryKey] = idOrCriteria;
     }
 
     //emitting event BEFORE
@@ -177,7 +174,7 @@ iModel.prototype.delete = async function (idOrCriteria, ctx) {
         if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
     }
 
-    var result = await this.model.destroy(criteria.filter);
+    var result = await this.model.destroy(criteria.where);
     
     //emitting event AFTER
     if (global.events && this.useEvents) {

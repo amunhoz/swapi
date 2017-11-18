@@ -8,7 +8,7 @@ var func = async function (ctx, returnResult) {
         res: res,                           // response object
         addFilter: addFilter,               // additional filter
         query: {                            // will replace parameters in query (sort, limit, skip, filter)
-            filter: {field: "value"},        //replace the filter
+            where: {field: "value"},        //replace the filter
         },
         subItens:{
             modelName : "model_itens", //model name for subitens
@@ -42,18 +42,20 @@ var func = async function (ctx, returnResult) {
     if (ctx.idParam) idParam = ctx.idParam;
     else idParam = "id";
     
-    let criteria = {}
-
+  //----------------------------------------------------------------------------------------------------------
+    //defining where clause
+    let query = {}
+    
     //get filter from res
-    criteria.filter = lib.blueHelper.getIdFilter(ctx.req, ctx.res, primaryKey, idParam);
-    if (ctx.filter) criteria.filter  = ctx.filter;
-    if (ctx.addFilter) criteria.filter  = lib.blueHelper.AddAndFilter(criteria.filter, ctx.addFilter);
+    query.where = lib.blueHelper.getIdFilter(ctx.req, ctx.res, primaryKey, idParam);
+    if (ctx.query && ctx.query.where) query.where = lib.blueHelper.mergeQuery(query.where, ctx.query.where);
+    if (ctx.addFilter) query.where  = lib.blueHelper.AddAndFilter(query.where, ctx.addFilter)
     
 
     //----------------------------------------------------------------------------------------------------------
     //execute
 	try {
-        var result = await model.delete(criteria.filter,  { req: ctx.req, res: ctx.res });
+        var result = await model.delete(query.where,  { req: ctx.req, res: ctx.res });
 	}
 	catch (e) {
         if (!model) {
@@ -75,12 +77,13 @@ var func = async function (ctx, returnResult) {
         }
 
         let scriteria = {};
+        scriteria.where = {};
         let pprimaryKey = model.model.primaryKey;
-        scriteria[ctx.subItens.parentField] = result[0][pprimaryKey];
+        scriteria.where[ctx.subItens.parentField] = result[0][pprimaryKey];
         
         // delete at once
         try {
-            var sresult = await model.delete(scriteria, { req: ctx.req, res: ctx.res });
+            var sresult = await smodel.delete(scriteria, { req: ctx.req, res: ctx.res });
         }
         catch (e) {
             throw Error(e);

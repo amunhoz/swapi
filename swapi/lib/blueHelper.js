@@ -37,7 +37,13 @@ util.CheckFilterJson = function (input) {
 
 util.AddAndFilter = function (pfilter, criteria) {
     var filter = {};
-
+    if (Object.keys(pfilter).length==0)  {
+        //one side empty
+        return criteria
+    } else if (Object.keys(criteria).length==0) {
+        return pfilter;
+    }
+    
     if (!pfilter) {
         filter = {};
     } else {
@@ -84,5 +90,22 @@ util.getIdFilter = function (req, res, primaryKey, idParam) {
     return filter;
 };
 
+util.mergeQuery = function (main, additional) {
+    let whiteList = ['where','sort','skip','limit','populate']
+    for (var key in additional){
+        //remove itens not related
+        if (whiteList.indexOf(key) < 0) continue;
+        
+        if (key == "where") {
+            //merge where
+            main['where'] = util.AddAndFilter(main['where'], additional['where'])
+        } else if (!main[key]) {
+            //do not replace main config
+            main[key] = additional[key]
+        }
+    }
+    
+    return main;
+};
 
 module.exports = util;

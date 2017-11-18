@@ -1,5 +1,5 @@
 'use strict';
-
+const merge = require('merge');
 var find = async function (ctx, returnResult) {
     /*
     ctx = {
@@ -8,7 +8,7 @@ var find = async function (ctx, returnResult) {
         res: res,                           // response object
         addFilter: addFilter,               // additional filter
         query: {                            // will replace parameters in query (sort, limit, skip, filter)
-            filter: {field: "value"},        //replace the filter
+            where: {field: "value"},        //replace the filter
             sort: sort,                     // Field ASC, reorder
             limit: limit,                   // limit itens
             skip: skip                      // skip itens
@@ -40,27 +40,12 @@ var find = async function (ctx, returnResult) {
     //defining criteria
     var query = {};
     if (ctx.query) query = ctx.query;
-    else query = ctx.req.query;
-    
-    //filter
-    if (query.filter) criteria.filter  = lib.blueHelper.CheckFilterJson(query.filter);    
-    if (ctx.addFilter) criteria.filter  = lib.blueHelper.AddAndFilter(criteria.filter, ctx.addFilter);
-
-    //limit for query
-    if (query.limit) criteria.limit = query.limit;
-
-    //skip
-    if (query.skip) criteria.skip = query.skip;
-
-    //sort
-    if (query.sort) criteria.sort  = query.sort;
-    else if (ctx.sort) criteria.sort  = ctx.sort;
-    
-    if (query.populate) criteria.populate  = query.populate;
+    if (ctx.req.query) query = lib.blueHelper.mergeQuery(query, ctx.req.query); //safe merger
+    if (ctx.addFilter) query.where  = lib.blueHelper.AddAndFilter(query.where, ctx.addFilter);
 
     //----------------------------------------------------------------------------------------------------------
     //executing    
-    var result = await model.find(criteria, { req: ctx.req, res: ctx.res });
+    var result = await model.find(query, { req: ctx.req, res: ctx.res });
        
     //----------------------------------------------------------------------------------------------------------
     //suport for sub itens 
@@ -74,12 +59,13 @@ var find = async function (ctx, returnResult) {
         }
 
         let scriteria = {};
+        scriteria.where = {};
         let pprimaryKey = model.model.primaryKey;
         //getting subitens from each result
         for(var i = 0; i < result.length;i++){
-            scriteria[ctx.subItens.parentField] = result[i][pprimaryKey];
+            scriteria.where[ctx.subItens.parentField] = result[i][pprimaryKey];
             try {
-                var sresult = await model.find(criteria, { req: ctx.req, res: ctx.res });
+                var sresult = await smodel.find(scriteria, { req: ctx.req, res: ctx.res });
             }
             catch (e) {
                 response = {code:500, result: {"success":false, error: JSON.stringify(e) } }

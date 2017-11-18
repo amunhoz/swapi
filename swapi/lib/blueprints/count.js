@@ -8,7 +8,7 @@ var func = async function (ctx, returnResult) {
         res: res,                           // response object
         addFilter: addFilter,               // additional filter
         query: {                            // will replace parameters in query (sort, limit, skip, filter)
-            filter: {field: "value"},        //replace the filter
+            where: {field: "value"},        //replace the filter
             sort: sort,                     // Field ASC, reorder
             limit: limit,                   // limit itens
             skip: skip                      // skip itens
@@ -25,26 +25,13 @@ var func = async function (ctx, returnResult) {
         else return ctx.res.status(response.code).send(response.result)
     }
 
-    //----------------------------------------------------------------------------------------------------------
+    
+   //----------------------------------------------------------------------------------------------------------
     //defining criteria
     var query = {};
     if (ctx.query) query = ctx.query;
-    else query = ctx.req.query;
-    
-    //filter
-    if (query.filter) criteria.filter  = lib.blueHelper.CheckFilterJson(query.filter);    
-    if (ctx.addFilter) criteria.filter  = lib.blueHelper.AddAndFilter(criteria.filter, ctx.addFilter);
-
-    //limit for query
-    if (query.limit) criteria.limit = query.limit;
-
-    //skip
-    if (query.skip) criteria.skip = query.skip;
-
-    //sort
-    if (query.sort) criteria.sort  = query.sort;
-    else if (ctx.sort) criteria.sort  = ctx.sort;
-
+    if (ctx.req.query) query = lib.blueHelper.mergeQuery(query, ctx.req.query); //safe merger
+    if (ctx.addFilter) query.where  = lib.blueHelper.AddAndFilter(query.where, ctx.addFilter)
     
     //----------------------------------------------------------------------------------------------------------
     //main command
