@@ -103,7 +103,7 @@ iModel.prototype.findOne = async function (idOrCriteria, ctx) {
         if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
     }
     if (result && result[0]) return result[0];
-    else return result;
+    else return false;
 }
 
 //==========================================================================================

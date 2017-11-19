@@ -30,9 +30,8 @@ var func = async function (ctx, returnResult) {
     //checking model
     let model = swapi.imodels[ctx.modelName.toLowerCase()];
     if (!model) {
-        response = {code:500, result: {"success":false, error: "Model not found! (" + ctx.modelName + ")" } }
-        if (returnResult) return response
-        else return ctx.res.status(response.code).send(response.result)
+        let resp = {error:{ code:"err_blueprint_model_nf", title: "Model not found!", details: {modelName:ctx.modelName}}}
+        return ctx.res.status(500).send(resp) && false;
     }
 
     //----------------------------------------------------------------------------------------------------------
@@ -80,12 +79,13 @@ var func = async function (ctx, returnResult) {
 
     //----------------------------------------------------------------------------------------------------------
     // loop every item and check for update or create
-    try {
+
+    try{
         var result = await model.update(query, data, { req: ctx.req, res: ctx.res });
     }
     catch (e) {
-        throw Error(e);
-        return;
+        let resp = {error:{ code:"err_blueprint_update", title: "Erro ao atualizar o registro!", details: {query: query, data:data,message:e.message, stack:e.stack}}}
+        return ctx.res.status(400).send(resp) && false;
     }
 
     //----------------------------------------------------------------------------------------------------------
@@ -94,9 +94,8 @@ var func = async function (ctx, returnResult) {
         //getting model
         let smodel = swapi.imodels[ctx.subItens.modelName];
         if (!smodel) {
-            response = {code:500, result: {"success":false, error: "Model for subitens not found! (" + ctx.subItens.modelName + ")" } }
-            if (returnResult) return response
-            else return ctx.res.status(response.code).send(response.result)
+            let resp = {error:{ code:"err_blueprint_model_nf", title: "Model not found!", details: {modelName:ctx.subItens.modelName}}}
+            return ctx.res.status(500).send(resp) && false;
         }
 
         let pprimaryKey = model.model.primaryKey;
@@ -117,24 +116,19 @@ var func = async function (ctx, returnResult) {
                 if (dataItens[i][sprimaryKey] && dataItens[i][sprimaryKey] > 0 ) {
                     //update                   
                     let itemId = dataItens[i][ctx.subItens.primaryKey]; 
-                    scriteria.where[sprimaryKey] = itemId;
-                    sresult = await smodel.update(scriteria, dataItens[i], { req: ctx.req, res: ctx.res });
-                    if (sresult[0]) result[0][ctx.subItens.itemName].push(sresult[0]);
-                    currentItens.push(itemId);
-
+                    sresult = await smodel.update(itemId, dataItens[i], { req: ctx.req, res: ctx.res });
                 } else {
                     //create
                     sresult = await model.create(dataItens[i], { req: ctx.req, res: ctx.res });
-                    result[0][ctx.subItens.itemName].push(sresult);
-                    currentItens.push(sresult[sprimaryKey]);
                 }
+                result[0][ctx.subItens.itemName].push(sresult);
+                currentItens.push(sresult[sprimaryKey]);
                 
+            } catch (e) {
+                let resp = {error:{ code:"err_blueprint_sub_update", title: "Erro ao criar o novo registro!", details: {data:dataItens[i],message:e.message, stack:e.stack}}}
+                return ctx.res.status(400).send(resp) && false;
             }
-            catch (e) {
-                response = {code:500, result: {"success":false, error: JSON.stringify(e) } }
-                if (returnResult) return response
-                else return ctx.res.status(response.code).send(response.result)
-            }
+           
             
         } // end for
 
@@ -142,16 +136,7 @@ var func = async function (ctx, returnResult) {
         //==============================================================================================
         //delete all except the current itens
         scriteria.where[sprimaryKey] = {$nin : currentItens}
-        try {
-            var result = await model.delete(scriteria,  { req: ctx.req, res: ctx.res });
-        }
-        catch (e) {
-            if (!model) {
-                response = {code:500, result: {"success":false, error: "Model not found! (" + ctx.modelName + ")" } }
-                if (returnResult) return response
-                else return ctx.res.status(response.code).send(response.result)
-            }
-        }
+        var result = await smodel.delete(scriteria,  { req: ctx.req, res: ctx.res });
         
     }
 
@@ -162,9 +147,8 @@ var func = async function (ctx, returnResult) {
         else return ctx.res.send(result[0])
     }
     else {
-        response = {code:404, result: {"success":false, error: "Register not found" } }
-        if (returnResult) return response
-        else return ctx.res.status(response.code).send(response.result)
+        let resp = {error:{ code:"blueprint_reg_not_found", title: "Register not found!", details: {query: query, data:data}}}
+        return ctx.res.status(404).send(resp) && false;
     }
     
 }

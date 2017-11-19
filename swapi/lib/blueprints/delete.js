@@ -24,9 +24,8 @@ var func = async function (ctx, returnResult) {
     //checking model
     let model = swapi.imodels[ctx.modelName.toLowerCase()];
     if (!model) {
-        response = {code:500, result: {"success":false, error: "Model not found! (" + ctx.modelName + ")" } }
-        if (returnResult) return response
-        else return ctx.res.status(response.code).send(response.result)
+        let resp = {error:{ code:"err_blueprint_model_nf", title: "Model not found!", details: {modelName:ctx.modelName}}}
+        return ctx.res.status(500).send(resp) && false;
     }
 
     //----------------------------------------------------------------------------------------------------------
@@ -54,26 +53,16 @@ var func = async function (ctx, returnResult) {
 
     //----------------------------------------------------------------------------------------------------------
     //execute
-	try {
-        var result = await model.delete(query,  { req: ctx.req, res: ctx.res });
-	}
-	catch (e) {
-        if (!model) {
-            response = {code:500, result: {"success":false, error: "Model not found! (" + ctx.modelName + ")" } }
-            if (returnResult) return response
-            else return ctx.res.status(response.code).send(response.result)
-        }
-    }
-    
+    var result = await model.delete(query,  { req: ctx.req, res: ctx.res });
+	
     //----------------------------------------------------------------------------------------------------------
     //suport for sub itens 
     if (ctx.subItens && result[0]) {
         //getting model
         let smodel = swapi.imodels[ctx.subItens.modelName];
         if (!smodel) {
-            response = {code:500, result: {"success":false, error: "Model for subitens not found! (" + ctx.subItens.modelName + ")" } }
-            if (returnResult) return response
-            else return ctx.res.status(response.code).send(response.result)
+            let resp = {error:{ code:"err_blueprint_model_nf", title: "Model not found!", details: {modelName:ctx.subItens.modelName}}}
+            return ctx.res.status(500).send(resp) && false;
         }
 
         let scriteria = {};
@@ -82,13 +71,7 @@ var func = async function (ctx, returnResult) {
         scriteria.where[ctx.subItens.parentField] = result[0][pprimaryKey];
         
         // delete at once
-        try {
-            var sresult = await smodel.delete(scriteria, { req: ctx.req, res: ctx.res });
-        }
-        catch (e) {
-            throw Error(e);
-            return;
-        }
+        var sresult = await smodel.delete(scriteria, { req: ctx.req, res: ctx.res });
         result[0][ctx.subItens.itemName] = sresult;
         
     }
@@ -99,9 +82,8 @@ var func = async function (ctx, returnResult) {
         if (returnResult) return result[0]
         else return ctx.res.send(result[0])
     } else {
-        response = {code:404, result: {"success":false, error: "Register not found" } }
-        if (returnResult) return response
-        else return ctx.res.status(response.code).send(response.result)
+        let resp = {error:{ code:"blueprint_reg_not_found", title: "Register not found!", details: {query: query, data:data}}}
+        return ctx.res.status(404).send(resp) && false;
     }
 }
 

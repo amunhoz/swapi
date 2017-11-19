@@ -28,9 +28,8 @@ var findOne = async function (ctx, returnResult) {
     //checking model
     let model = swapi.imodels[ctx.modelName];
     if (!model) {
-        response = {code:500, result: {"success":false, error: "Model not found! (" + ctx.modelName + ")" } }
-        if (returnResult) return response
-        else return ctx.res.status(response.code).send(response.result)
+        let resp = {error:{ code:"err_blueprint_model_nf", title: "Model not found!", details: {modelName:ctx.modelName}}}
+        return ctx.res.status(500).send(resp) && false;
     }
 
     
@@ -47,7 +46,6 @@ var findOne = async function (ctx, returnResult) {
     if (ctx.idParam) idParam = ctx.idParam;
     else idParam = "id";
 
-
    //----------------------------------------------------------------------------------------------------------
     //defining where clause
     let query = {}
@@ -60,19 +58,18 @@ var findOne = async function (ctx, returnResult) {
 
     //----------------------------------------------------------------------------------------------------------
     //use other blueprint to main command
-    var response = await lib.blueprints.find(ctx, true);
-
-    //----------------------------------------------------------------------------------------------------------
-    //return results
-    if (returnResult) {
-        return response;
-    } else {
-        if (response.code) {
-            ctx.res.status(response.code).send(response.result)
+    var resp = await lib.blueprints.find(ctx, true);
+    
+    // return results - if false, probaly the res.send was runned
+    if (resp !== false){
+        if (returnResult) {
+            return response;
         } else {
             ctx.res.send(response[0]);
         }
-    }
+    } 
+
+    
     
 }
 

@@ -21,13 +21,7 @@ module.exports = {
 						throw Error("View file not found:" + fullName);
 						return false;
 					}
-					try {
-						templates[propName] = ejs.compile(fs.readFileSync(fullName).toString());
-					}
-					catch (e) {
-						throw Error(e);
-						return false;
-					}
+					templates[propName] = ejs.compile(fs.readFileSync(fullName).toString());
 				}
 				let result = templates[propName](data);
 				if (swapi.events && this.useEvents) {

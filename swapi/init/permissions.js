@@ -6,7 +6,7 @@ module.exports = {
     run: async function (app) {
         var mm = require('micromatch');
         let nroutes = app._router.stack.length;
-        let pconfig = hjson.readFileSync(swapi.config.locations.permissions);
+        var pconfig = hjson.readFileSync(swapi.config.locations.permissions);
         var removePath = app.mountpath;
         for (var i = 0; i < nroutes; i++) {
             let route =  app._router.stack[i].route;
@@ -44,6 +44,26 @@ module.exports = {
             let curPerm = req.route.permissions[group];
             if (!curPerm) return "deny";
             return curPerm;
+        }
+
+        swapi.lib.permission.checkPath = function (path, method, group) {
+            var result = "deny";
+            for (var ig = 0; ig < pconfig.length; ig++) {
+                let igroup = pconfig[ig];
+                let groupNames = igroup.group.split(",");
+                if (groupNames.indexOf(group) < 0 ) continue; //check if has the group
+                for (var ip = 0; ip < group.permissions.length; ip++) {
+                    let perm = group.permissions[ip];
+                    if (!mm.isMatch(routePath, perm.resource) ) continue; // check if route match
+                    for (var im = 0; im < perm.methods.length; im++) { 
+                        let method = perm.methods[im].toLowerCase();
+                        if (route.methods[method]) { //check if method match
+                            result = perm.action;
+                        }
+                    }
+                }
+            }
+            return result;
         }
 
         console.log("(init) Permissions loaded");

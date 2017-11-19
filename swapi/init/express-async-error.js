@@ -3,7 +3,8 @@ module.exports = {
     name: "express-async-error",
     run: async function (app) {
         //from require('express-async-errors');
-
+        
+        //wraper to show async functions errors
         const Layer = require('express/lib/router/layer');
 
         Object.defineProperty(Layer.prototype, "handle", {
@@ -28,20 +29,20 @@ module.exports = {
                     routePromise.catch(err => {
                         sysLog.error(err);
                         console.log(err);
-                        let resp = { sucess: false, error: {code:  999998, message: err.message, stack: err.stack} }
+                        let resp = {error: {code:  "err_async_express_general", title: "Erro geral express async", details:{message: err.message, stack: err.stack} }}
                         res.status(500).send(resp);
                     });
                     //routePromise.catch(err => next(err));
                 }
             }
         };
-
+/*
         function treatError(err) {
             sysLog.error(err);
             let resp = { sucess: false ,error: {code: 999999, message: err.message, stack: err.stack} }
             res.status(500).send(resp);
         }
-
+*/
         console.log("(init) Express async errors loaded");
     }
 }

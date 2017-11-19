@@ -24,16 +24,15 @@ var find = async function (ctx, returnResult) {
         filter - filter in json format (see waterline doc)
         pupulate - the presence of the parameter will trigger the populate of relations
     */
-    var response = {};
+    
     let criteria = {};
 
     //----------------------------------------------------------------------------------------------------------
     //checking model
     let model = swapi.imodels[ctx.modelName];
     if (!model) {
-        response = {code:500, result: {"success":false, error: "Model not found! (" + ctx.modelName + ")" } }
-        if (returnResult) return response
-        else return ctx.res.status(response.code).send(response.result)
+        let resp = {error:{ code:"err_blueprint_model_nf", title: "Model not found!", details: {modelName:ctx.modelName}}}
+        return ctx.res.status(500).send(resp) && false;
     }
 
     //----------------------------------------------------------------------------------------------------------
@@ -53,9 +52,8 @@ var find = async function (ctx, returnResult) {
         //checking model
         let smodel = swapi.imodels[ctx.subItens.modelName];
         if (!smodel) {
-            response = {code:500, result: {"success":false, error: "Model for subitens not found! (" + ctx.subItens.modelName + ")" } }
-            if (returnResult) return response
-            else return ctx.res.status(response.code).send(response.result)
+            let resp = {error:{ code:"err_blueprint_model_nf", title: "Model not found!", details: {modelName:ctx.subItens.modelName}}}
+            return ctx.res.status(500).send(resp) && false;
         }
 
         let scriteria = {};
@@ -64,14 +62,7 @@ var find = async function (ctx, returnResult) {
         //getting subitens from each result
         for(var i = 0; i < result.length;i++){
             scriteria.where[ctx.subItens.parentField] = result[i][pprimaryKey];
-            try {
-                var sresult = await smodel.find(scriteria, { req: ctx.req, res: ctx.res });
-            }
-            catch (e) {
-                response = {code:500, result: {"success":false, error: JSON.stringify(e) } }
-                if (returnResult) return response
-                else return ctx.res.status(response.code).send(response.result)
-            }
+            var sresult = await smodel.find(scriteria, { req: ctx.req, res: ctx.res });
             result[i][ctx.subItens.itemName] = sresult;
         }
         
@@ -83,7 +74,7 @@ var find = async function (ctx, returnResult) {
         if (returnResult) return result
         else return ctx.res.send(result)
     } else {
-        response = {code:404, result: {"success":false, error: "Register not found" } }
+        response = {code:404, result: {error:{ code:"blueprint_reg_not_found", title: "Register not found", details: {}}}}
         if (returnResult) return response
         else return ctx.res.status(response.code).send(response.result)
     }

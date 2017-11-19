@@ -19,14 +19,12 @@ var func = async function (ctx, returnResult) {
     }
     */
     
-    var response = {};
     //----------------------------------------------------------------------------------------------------------
     //checking model
     let model = swapi.imodels[ctx.modelName.toLowerCase()];
     if (!model) {
-        response = {code:500, result: {"success":false, error: "Model not found! (" + ctx.modelName + ")" } }
-        if (returnResult) return response
-        else return ctx.res.status(response.code).send(response.result)
+        let resp = {error:{ code:"err_blueprint_model_nf", title: "Model not found!", details: {modelName:ctx.modelName}}}
+        return ctx.res.status(500).send(resp) && false;
     }
     
     //----------------------------------------------------------------------------------------------------------
@@ -51,13 +49,14 @@ var func = async function (ctx, returnResult) {
     
     //----------------------------------------------------------------------------------------------------------
     //execute main command
-	try {
+    try{
         var result = await model.create(data, { req: ctx.req, res: ctx.res });
-	}
-	catch (e) {
-        throw Error(e);
-        return;
     }
+    catch (e) {
+        let resp = {error:{ code:"err_blueprint_create", title: "Erro ao criar o novo registro!", details: {data:data,message:e.message, stack:e.stack}}}
+        return ctx.res.status(400).send(resp) && false;
+    }
+    
     
     //----------------------------------------------------------------------------------------------------------
     //suport for sub itens 
@@ -65,9 +64,8 @@ var func = async function (ctx, returnResult) {
         //getting model
         let smodel = swapi.imodels[ctx.subItens.modelName];
         if (!smodel) {
-            response = {code:500, result: {"success":false, error: "Model for subitens not found! (" + ctx.subItens.modelName + ")" } }
-            if (returnResult) return response
-            else return ctx.res.status(response.code).send(response.result)
+            let resp = {error:{ code:"err_blueprint_model_nf", title: "Model not found!", details: {modelName:ctx.subItens.modelName}}}
+            return ctx.res.status(500).send(resp) && false;
         }
 
         let defaults = {};
@@ -80,9 +78,8 @@ var func = async function (ctx, returnResult) {
                 var sresult = await smodel.create(dataItens[i], { req: ctx.req, res: ctx.res });
             }
             catch (e) {
-                response = {code:500, result: {"success":false, error: JSON.stringify(e) } }
-                if (returnResult) return response
-                else return ctx.res.status(response.code).send(response.result)
+                let resp = {error:{ code:"err_blueprint_sub_create", title: "Erro ao criar o novo registro!", details: {data:dataItens[i],message:e.message, stack:e.stack}}}
+                return ctx.res.status(400).send(resp) && false;
             }
             result[ctx.subItens.itemName].push(sresult);
         }

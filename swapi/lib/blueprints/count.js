@@ -20,9 +20,8 @@ var func = async function (ctx, returnResult) {
     //checking model
     let model = swapi.imodels[ctx.modelName.toLowerCase()];
     if (!model) {
-        response = {code:500, result: {"success":false, error: "Model not found! (" + ctx.modelName + ")" } }
-        if (returnResult) return response
-        else return ctx.res.status(response.code).send(response.result)
+        let resp = {error:{ code:"err_blueprint_model_nf", title: "Model not found!", details: {modelName:ctx.modelName}}}
+        return ctx.res.status(500).send(resp) && false;
     }
 
     
@@ -36,13 +35,7 @@ var func = async function (ctx, returnResult) {
     //----------------------------------------------------------------------------------------------------------
     //main command
 
-	try {
-        var result = await model.count(criteria,  { req: ctx.req, res: ctx.res });
-	}
-	catch (e) {
-        throw Error(e);
-        return;
-    }
+    var result = await model.count(criteria,  { req: ctx.req, res: ctx.res });
     
     //----------------------------------------------------------------------------------------------------------
     //return results
