@@ -10,3 +10,12 @@ exports.request = async function (options) {
     })
 }
 
+
+exports.leftMergeObj = function (main, additional) {
+    for (var key in additional){
+         if (!main[key]) {
+            main[key] = additional[key]
+        }
+    }
+    return main;
+};

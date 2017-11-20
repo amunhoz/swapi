@@ -10,6 +10,7 @@ var find = async function (ctx, returnResult) {
         query: {                            // will replace parameters in query (sort, limit, skip, filter)
             where: {field: "value"},        //replace the filter
             sort: sort,                     // Field ASC, reorder
+            populate: 'item1, item2',       // populate relations
             limit: limit,                   // limit itens
             skip: skip                      // skip itens
         },
@@ -70,15 +71,14 @@ var find = async function (ctx, returnResult) {
 
     //----------------------------------------------------------------------------------------------------------
     //return results
-    if (result[0]){
+    
+    if (result[0]) {
         if (returnResult) return result
         else return ctx.res.send(result)
     } else {
-        response = {code:404, result: {error:{ code:"blueprint_reg_not_found", title: "Register not found", details: {}}}}
-        if (returnResult) return response
-        else return ctx.res.status(response.code).send(response.result)
+        let resp = {error:{ code:"blueprint_reg_not_found", title: "Register not found!", details: {query: query}}}
+        return ctx.res.status(404).send(resp) && false;
     }
-
 }
 
 

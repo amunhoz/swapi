@@ -36,6 +36,9 @@ util.CheckFilterJson = function (input) {
 };
 
 util.AddAndFilter = function (pfilter, criteria) {
+    if (typeof(pfilter) == "undefined") pfilter = {};
+    if (typeof(criteria) == "undefined") criteria = {};
+
     var filter = {};
     if (Object.keys(pfilter).length==0)  {
         //one side empty

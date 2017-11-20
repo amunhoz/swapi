@@ -49,9 +49,9 @@ var findOne = async function (ctx, returnResult) {
    //----------------------------------------------------------------------------------------------------------
     //defining where clause
     let query = {}
-    
+    if (ctx.query) query = ctx.query;
     //get filter from res
-    query.where = lib.blueHelper.getIdFilter(ctx.req, ctx.res, primaryKey, idParam);
+    if (!query.where) query.where = lib.blueHelper.getIdFilter(ctx.req, ctx.res, primaryKey, idParam);
     if (ctx.query && ctx.query.where) query.where = lib.blueHelper.mergeQuery(query.where, ctx.query.where);
     if (ctx.addFilter) query.where  = lib.blueHelper.AddAndFilter(query.where, ctx.addFilter)
     ctx.query = query;
@@ -63,9 +63,9 @@ var findOne = async function (ctx, returnResult) {
     // return results - if false, probaly the res.send was runned
     if (resp !== false){
         if (returnResult) {
-            return response;
+            return resp[0];
         } else {
-            ctx.res.send(response[0]);
+            ctx.res.send(resp[0]);
         }
     } 
 
