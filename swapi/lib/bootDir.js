@@ -2,25 +2,27 @@
 
 const fs = require("fs");
 const path = require('path');
- 
+const readdir = require("recursive-readdir");
+
 function cModule() {
     this.scripts = [];
     this.scriptsOrder = [];
 };
 
 cModule.prototype.start = async function (xapp, xdir, info) {
-    var files = fs.readdirSync(xdir);
-    
+    xdir = path.resolve(xdir + "/");
+    var files = await readdir(xdir);
+        
     for (var i = 0, len = files.length; i < len; i++) {
         var extension = path.extname(files[i]);
-		var name = path.basename(files[i], extension);
+		var name = files[i].replace(xdir, "").replace(extension, "").substr(1).replace("\\","/");
         if (extension == ".js") {
 			if (info) {
 				if (info[name] && info[name].enabled) {
-					await cModule.prototype.loadFile.call(this, name, xdir + "/" + files[i], info[name].priority);
+					await cModule.prototype.loadFile.call(this, name, files[i], info[name].priority);
 				}
 			} else {
-				await cModule.prototype.loadFile.call(this, name, xdir + "/" + files[i]);
+				await cModule.prototype.loadFile.call(this, name, files[i]);
 			}
 		}
     }
@@ -50,8 +52,7 @@ cModule.prototype.loadFile = async function ( name, fullFilePath, priority) {
 
 cModule.prototype.execScript = async function (xapp) {
     var _this = this;
-
-
+    
     this.scripts.sort(function (a, b) {
         return a.priority - b.priority;
     });

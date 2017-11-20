@@ -5,5 +5,10 @@
 </head>
 <body>
     <h1><%= message %></h1>
+    <br>
+    <!--[html-partial:include:{"file":"partials\/_layout-quick-sidebar.html"}]/-->
+    <%- include("dir/fileinclude.ejs",{message2: message}) %>
+    <!--[html-partial:include:{"file":"partials\/_layout-quick-sidebar.html"}]/-->
 </body>
 </html>
+<!-- include /.example-class -->

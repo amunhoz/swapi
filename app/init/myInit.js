@@ -5,11 +5,9 @@
 module.exports = {
     priority: 999,
     enabled: true,
-    name: "Tests",
     run: async function (app) {
 
-        console.log(" -- (api init) Tests cache loaded");
-        
+		console.log(" -- (api init) Tests cache loaded");
         //test swapi queue
         for (var i = 0; i < 5; i++) {
 
@@ -20,7 +18,6 @@ module.exports = {
             });
 
         }
-        
 
     }
 }

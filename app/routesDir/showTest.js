@@ -1,11 +1,11 @@
 'use strict';
-//var express = require('express');
 var router = require('express').Router();
 
 // with security module from /security
 // custom security here
- 
-/* GET home page. */
+if (!(swapi.security && swapi.security.apikey) ) 
+	throw new Error("Verifique o nome da politica de segurança em arquivos do routesDir " );
+
 router.get('/', swapi.security.apikey, function(req, res, next) {
   		res.render(
 		"testView",
