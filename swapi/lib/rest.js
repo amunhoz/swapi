@@ -72,6 +72,9 @@ exports.put = async function (options) {
     return await exports.restCmd("put", options)
 }
 
+exports.patch = async function (options) {
+    return await exports.restCmd("patch", options)
+}
 exports.delete = async function (options) {
     return await exports.restCmd("delete", options)
 }

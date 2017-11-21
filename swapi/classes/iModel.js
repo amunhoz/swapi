@@ -28,7 +28,13 @@ iModel.prototype.find = async function (criteria, ctx) {
      
     var query = this.model.find(criteria);
     if (criteria.populate) {
-        let popItens = criteria.populate.split(",")
+        /*
+            let populate = ['name1', {name2:{filter:1}} ]
+        */
+        let popItens = [];
+        if ((!!criteria.populate) && (criteria.populate.constructor === Array))  popItens = criteria.populate
+        else popItens = criteria.populate.split(",")
+        
         if (popItens[0].toLowerCase() == "all") {
             // populate all
             query.populateAll();
@@ -36,8 +42,15 @@ iModel.prototype.find = async function (criteria, ctx) {
         else  {
             //populate models with names
             popItens.map(function (element) {
-                query.populate(element)
-                });
+                let name, filter = {}
+                if ((!!element) && (element.constructor === Object)) {
+                    name = Object.keys(element)[0] //get name
+                    filter = element[name]
+                } else {
+                    name = element
+                }
+                query.populate(name, filter)
+            });
         } 
         delete criteria.populate;
     }

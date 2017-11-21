@@ -41,7 +41,7 @@ var find = async function (ctx, returnResult) {
     var query = {};
     if (ctx.query) query = ctx.query;
     for (var ni in ctx.req.query) {
-        if (typeof ctx.req.query[ni] != "undefined") 
+        if (typeof ctx.req.query[ni] != "undefined" && !ctx.req.query[ni]) 
             query[ni] = ctx.req.query[ni];
     }
     if (ctx.addFilter) query.where  = lib.blueHelper.AddAndFilter(query.where, ctx.addFilter);
@@ -70,7 +70,8 @@ var find = async function (ctx, returnResult) {
         for(var i = 0; i < result.length;i++){
             //query customization
             if (ctx.subItens.query) squery = ctx.subItens.query;
-            squery.where[ctx.subItens.parentField] = squery[i][pprimaryKey];
+            if (!squery.where) squery.where = {};
+            squery.where[ctx.subItens.parentField] = result[i][pprimaryKey];
             if (ctx.subItens.addFilter) squery.where  = lib.blueHelper.AddAndFilter(squery.where, ctx.subItens.addFilter);
 
             //execute query

@@ -29,7 +29,10 @@ var func = async function (ctx, returnResult) {
     //defining criteria
     var query = {};
     if (ctx.query) query = ctx.query;
-    if (ctx.req.query) query = lib.blueHelper.mergeQuery(query, ctx.req.query); //safe merger
+    for (var ni in ctx.req.query) {
+        if (typeof ctx.req.query[ni] != "undefined" && !ctx.req.query[ni]) 
+            query[ni] = ctx.req.query[ni];
+    }
     if (ctx.addFilter) query.where  = lib.blueHelper.AddAndFilter(query.where, ctx.addFilter)
     
     //----------------------------------------------------------------------------------------------------------
