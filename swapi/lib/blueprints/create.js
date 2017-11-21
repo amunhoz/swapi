@@ -70,10 +70,12 @@ var func = async function (ctx, returnResult) {
 
         let defaults = {};
         let pprimaryKey = model.model.primaryKey;
-        defaults[ctx.subItens.parentField] = result[pprimaryKey];
+        
         result[ctx.subItens.itemName] = [];
 
         for(var i = 0; i < dataItens.length;i++){
+            //feeding connection
+            dataItens[i][ctx.subItens.parentField] = result[pprimaryKey];
             try {
                 var sresult = await smodel.create(dataItens[i], { req: ctx.req, res: ctx.res });
             }

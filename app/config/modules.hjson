@@ -25,6 +25,13 @@
     "enabled": true,
     "priority": 3
   },
+  
+  //===================================================================================
+  //Define a custom timezone for the app
+  "timezone": {
+    "enabled": true,
+    "priority": 4
+  },
 
   //===================================================================================
   //basic configuration for express, gzip, etc.

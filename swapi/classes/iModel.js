@@ -20,11 +20,12 @@ iModel.prototype.find = async function (criteria, ctx) {
     if (swapi.events && this.useEvents) {
         ctx.model = this.model
         ctx.criteria = criteria
+        ctx.cancel == false;
         global.lib.blueHelper.emitEvent(this.modelName, "before", "find", ctx);
         if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
+        if (ctx.cancel == true) return;//if any other middleware has ended it
     }
-
-    
+     
     var query = this.model.find(criteria);
     if (criteria.populate) {
         let popItens = criteria.populate.split(",")
@@ -63,7 +64,9 @@ iModel.prototype.count = async function (criteria, ctx) {
     if (swapi.events && this.useEvents) {
         ctx.model = this.model
         ctx.criteria = criteria
+        ctx.cancel == false;
         global.lib.blueHelper.emitEvent(this.modelName, "before", "find", ctx);
+        if (ctx.cancel == true) return;//if any other middleware has ended it
         if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
     }
 
@@ -90,15 +93,18 @@ iModel.prototype.findOne = async function (idOrCriteria, ctx) {
     if ((!!idOrCriteria) && (idOrCriteria.constructor === Object)) {
         criteria = idOrCriteria;
     } else {
-        criteria[this.model.primaryKey] = idOrCriteria;
+        criteria.where = {};
+        criteria.where[this.model.primaryKey] = idOrCriteria;
     }
 
     //emitting event BEFORE
     if (swapi.events && this.useEvents) {
         ctx.model = this.model
         ctx.criteria = criteria
+        ctx.cancel == false;
         global.lib.blueHelper.emitEvent(this.modelName, "before", "find", ctx);
         if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
+        if (ctx.cancel == true) return;//if any other middleware has ended it
     }
 
 
@@ -125,7 +131,8 @@ iModel.prototype.update = async function (idOrCriteria, data, ctx) {
     if ((!!idOrCriteria) && (idOrCriteria.constructor === Object)) {
         criteria = idOrCriteria;
     } else {
-        criteria[this.model.primaryKey] = idOrCriteria;
+        criteria.where = {};
+        criteria.where[this.model.primaryKey] = idOrCriteria;
         byId = true;
     }
 
@@ -134,8 +141,10 @@ iModel.prototype.update = async function (idOrCriteria, data, ctx) {
         ctx.model = this.model
         ctx.criteria = criteria
         ctx.data = data
+        ctx.cancel == false;
         global.lib.blueHelper.emitEvent(this.modelName, "before", "update", ctx);
         if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
+        if (ctx.cancel == true) return;//if any other middleware has ended it
     }
 
     var result = await this.model.update(criteria, data);
@@ -160,8 +169,10 @@ iModel.prototype.create = async function (data, ctx) {
     if (swapi.events && this.useEvents) {
         ctx.model = this.model
         ctx.data = data
+        ctx.cancel == false;
         global.lib.blueHelper.emitEvent(this.modelName, "before", "create", ctx);
         if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
+        if (ctx.cancel == true) return;//if any other middleware has ended it
     }
 
     var result = await this.model.create(data);
@@ -186,7 +197,8 @@ iModel.prototype.delete = async function (idOrCriteria, ctx) {
     if ((!!idOrCriteria) && (idOrCriteria.constructor === Object)) {
         criteria = idOrCriteria;
     } else {
-        criteria[this.model.primaryKey] = idOrCriteria;
+        criteria.where = {};
+        criteria.where[this.model.primaryKey] = idOrCriteria;
         byId = true;
     }
 
@@ -194,8 +206,10 @@ iModel.prototype.delete = async function (idOrCriteria, ctx) {
     if (swapi.events && this.useEvents) {
         ctx.model = this.model
         ctx.criteria = criteria
-        global.lib.blueHelper.emitEvent(this.modelName, "before", "delete", { model: this.model, criteria: criteria, ctx: ctx });
+        ctx.cancel == false;
+        global.lib.blueHelper.emitEvent(this.modelName, "before", "delete", ctx);
         if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
+        if (ctx.cancel == true) return;//if any other middleware has ended it
     }
 
     var result = await this.model.destroy(criteria.where);

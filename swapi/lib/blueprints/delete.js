@@ -57,7 +57,7 @@ var func = async function (ctx, returnResult) {
 	
     //----------------------------------------------------------------------------------------------------------
     //suport for sub itens 
-    if (ctx.subItens && result[0]) {
+    if (ctx.subItens && result) {
         //getting model
         let smodel = swapi.imodels[ctx.subItens.modelName];
         if (!smodel) {
@@ -68,21 +68,21 @@ var func = async function (ctx, returnResult) {
         let scriteria = {};
         scriteria.where = {};
         let pprimaryKey = model.model.primaryKey;
-        scriteria.where[ctx.subItens.parentField] = result[0][pprimaryKey];
+        scriteria.where[ctx.subItens.parentField] = result[pprimaryKey];
         
         // delete at once
         var sresult = await smodel.delete(scriteria, { req: ctx.req, res: ctx.res });
-        result[0][ctx.subItens.itemName] = sresult;
+        result[ctx.subItens.itemName] = sresult;
         
     }
 
     //----------------------------------------------------------------------------------------------------------
     //return results
-    if (result[0]) {
-        if (returnResult) return result[0]
-        else return ctx.res.send(result[0])
+    if (result) {
+        if (returnResult) return result
+        else return ctx.res.send(result)
     } else {
-        let resp = {error:{ code:"blueprint_reg_not_found", title: "Register not found!", details: {query: query, data:data}}}
+        let resp = {error:{ code:"blueprint_reg_not_found", title: "Register not found!", details: {query: query, result:result}}}
         return ctx.res.status(404).send(resp) && false;
     }
 }

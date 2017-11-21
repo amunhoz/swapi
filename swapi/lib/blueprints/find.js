@@ -40,7 +40,10 @@ var find = async function (ctx, returnResult) {
     //defining criteria
     var query = {};
     if (ctx.query) query = ctx.query;
-    if (ctx.req.query) query = lib.blueHelper.mergeQuery(query, ctx.req.query); //safe merger
+    for (var ni in ctx.req.query) {
+        if (typeof ctx.req.query[ni] != "undefined") 
+            query[ni] = ctx.req.query[ni];
+    }
     if (ctx.addFilter) query.where  = lib.blueHelper.AddAndFilter(query.where, ctx.addFilter);
 
     //----------------------------------------------------------------------------------------------------------
@@ -57,13 +60,21 @@ var find = async function (ctx, returnResult) {
             return ctx.res.status(500).send(resp) && false;
         }
 
+        var squery = {};
+        
         let scriteria = {};
         scriteria.where = {};
         let pprimaryKey = model.model.primaryKey;
+        
         //getting subitens from each result
         for(var i = 0; i < result.length;i++){
-            scriteria.where[ctx.subItens.parentField] = result[i][pprimaryKey];
-            var sresult = await smodel.find(scriteria, { req: ctx.req, res: ctx.res });
+            //query customization
+            if (ctx.subItens.query) squery = ctx.subItens.query;
+            squery.where[ctx.subItens.parentField] = squery[i][pprimaryKey];
+            if (ctx.subItens.addFilter) squery.where  = lib.blueHelper.AddAndFilter(squery.where, ctx.subItens.addFilter);
+
+            //execute query
+            var sresult = await smodel.find(squery, { req: ctx.req, res: ctx.res });
             result[i][ctx.subItens.itemName] = sresult;
         }
         

@@ -27,8 +27,7 @@ module.exports = {
                 const routePromise = fn(req, res, next);
                 if (routePromise.catch) {
                     routePromise.catch(err => {
-                        sysLog.error(err);
-                        console.log(err);
+                        sysLog.error({message: err.message, stack: err.stack});
                         let resp = {error: {code:  "err_async_express_general", title: "Erro geral express async", details:{message: err.message, stack: err.stack} }}
                         res.status(500).send(resp);
                     });

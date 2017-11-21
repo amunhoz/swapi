@@ -109,8 +109,8 @@ var func = async function (ctx, returnResult) {
         //==============================================================================================
         // loop every item and check for update or create
         for(var i = 0; i < dataItens.length;i++){
-            //default value
-            dataItens[i][ctx.subItens.parentField] = result[pprimaryKey]
+            //feeding connection
+            dataItens[i][ctx.subItens.parentField] = result[pprimaryKey];
 
             try {
                 if (dataItens[i][sprimaryKey] && dataItens[i][sprimaryKey] > 0 ) {

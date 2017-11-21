@@ -4,11 +4,6 @@ var requireDir = require('require-dir');
 module.exports = {
   name: "api-init",
   run: async function (app) {
-      if (swapi.config.timezone) {
-          const setTZ = require('set-tz')
-          setTZ(swapi.config.timezone)
-      }
-        
 
       global.swapi.lib = await requireDir(swapi.config.locations.libs, { recurse: true });
       console.log("  -> Loading api libraries done.");			
