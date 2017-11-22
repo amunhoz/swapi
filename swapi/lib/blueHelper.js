@@ -70,7 +70,7 @@ util.AddAndFilter = function (pfilter, criteria) {
             filter = merge(filter, criteria);
         }
     }
-    pfilter = filter;
+    //pfilter = filter;
     return filter;
 };
 
@@ -95,6 +95,7 @@ util.getIdFilter = function (req, res, primaryKey, idParam) {
 
 util.mergeQuery = function (main, additional) {
     let whiteList = ['where','sort','skip','limit','populate']
+    let result = Object.assign({}, main); //clone object
     for (var key in additional){
         //remove itens not related
         if (whiteList.indexOf(key) < 0) continue;
@@ -106,13 +107,13 @@ util.mergeQuery = function (main, additional) {
             continue;
         } */
 
-         if (!main[key]) {
+         if (!result[key]) {
             //do not replace main config
-            main[key] = additional[key]
+            result[key] = additional[key]
         }
     }
     
-    return main;
+    return result;
 };
 
 module.exports = util;

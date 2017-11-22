@@ -49,7 +49,7 @@ iModel.prototype.find = async function (criteria, ctx) {
                 } else {
                     name = element
                 }
-                query.populate(name, filter)
+                query.populate(name.trim(), filter)
             });
         } 
         delete criteria.populate;

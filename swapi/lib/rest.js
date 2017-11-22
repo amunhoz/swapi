@@ -42,7 +42,7 @@ exports.restCmd = async function (method, options) {
 
         req.end((response) => {
               if (response.error) reject(response)
-			  else if (response.statusType > 4) reject(response);
+			  //else if (response.statusType > 4) reject(response);
               else resolve(response.body);
              }
            );

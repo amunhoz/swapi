@@ -99,7 +99,7 @@ var func = async function (ctx, returnResult) {
         }
 
         let pprimaryKey = model.model.primaryKey;
-        let sprimaryKey = ctx.subItens.primaryKey;
+        let sprimaryKey = ssmodel.model.primaryKey;
         result[0][ctx.subItens.itemName] = [];
         var sresult;
         var currentItens = [];
@@ -111,7 +111,6 @@ var func = async function (ctx, returnResult) {
         for(var i = 0; i < dataItens.length;i++){
             //feeding connection
             dataItens[i][ctx.subItens.parentField] = result[pprimaryKey];
-
             try {
                 if (dataItens[i][sprimaryKey] && dataItens[i][sprimaryKey] > 0 ) {
                     //update                   

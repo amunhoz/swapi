@@ -1,5 +1,7 @@
 'use strict';
 const merge = require('merge');
+var clone = require('util')._extend;
+
 var find = async function (ctx, returnResult) {
     /*
     ctx = {
@@ -27,7 +29,7 @@ var find = async function (ctx, returnResult) {
     */
     
     let criteria = {};
-
+    
     //----------------------------------------------------------------------------------------------------------
     //checking model
     let model = swapi.imodels[ctx.modelName];
@@ -39,7 +41,8 @@ var find = async function (ctx, returnResult) {
     //----------------------------------------------------------------------------------------------------------
     //defining criteria
     var query = {};
-    if (ctx.query) query = ctx.query;
+    
+    if (ctx.query) query = Object.assign({}, ctx.query); //clone object
     for (var ni in ctx.req.query) {
         if (typeof ctx.req.query[ni] != "undefined" && !ctx.req.query[ni]) 
             query[ni] = ctx.req.query[ni];
@@ -49,7 +52,7 @@ var find = async function (ctx, returnResult) {
     //----------------------------------------------------------------------------------------------------------
     //executing    
     var result = await model.find(query, { req: ctx.req, res: ctx.res });
-       
+    var resultFinal = [];   
     //----------------------------------------------------------------------------------------------------------
     //suport for sub itens 
     if (ctx.subItens && result[0]) {
@@ -59,34 +62,34 @@ var find = async function (ctx, returnResult) {
             let resp = {error:{ code:"err_blueprint_model_nf", title: "Model not found!", details: {modelName:ctx.subItens.modelName}}}
             return ctx.res.status(500).send(resp) && false;
         }
-
-        var squery = {};
         
-        let scriteria = {};
-        scriteria.where = {};
         let pprimaryKey = model.model.primaryKey;
         
         //getting subitens from each result
         for(var i = 0; i < result.length;i++){
+            let squery = {};
             //query customization
-            if (ctx.subItens.query) squery = ctx.subItens.query;
+            if (ctx.subItens.query) squery =  Object.assign({}, ctx.subItens.query)  //clone object
             if (!squery.where) squery.where = {};
             squery.where[ctx.subItens.parentField] = result[i][pprimaryKey];
             if (ctx.subItens.addFilter) squery.where  = lib.blueHelper.AddAndFilter(squery.where, ctx.subItens.addFilter);
 
             //execute query
             var sresult = await smodel.find(squery, { req: ctx.req, res: ctx.res });
-            result[i][ctx.subItens.itemName] = sresult;
+            let record = result[i].toObject();
+            record[ctx.subItens.itemName] = sresult
+            //result[i][ctx.subItens.itemName] = sresult;
+            resultFinal.push(record);
         }
-        
+    } else {
+        resultFinal = result;
     }
 
     //----------------------------------------------------------------------------------------------------------
     //return results
-    
-    if (result[0]) {
-        if (returnResult) return result
-        else return ctx.res.send(result)
+    if (resultFinal[0]) {
+        if (returnResult) return resultFinal
+        else return ctx.res.send(resultFinal)
     } else {
         let resp = {error:{ code:"blueprint_reg_not_found", title: "Register not found!", details: {query: query}}}
         return ctx.res.status(404).send(resp) && false;

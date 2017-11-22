@@ -19,3 +19,12 @@ exports.leftMergeObj = function (main, additional) {
     }
     return main;
 };
+
+
+//extending objects .cloneMe function
+Object.defineProperty(Object.prototype, "cloneMe", {
+    enumerable: false,
+    value: function() {
+        return Object.assign({}, this);
+    }
+});
