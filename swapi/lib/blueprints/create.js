@@ -19,6 +19,12 @@ var func = async function (ctx, returnResult) {
     }
     */
     
+    //check headers_sent 
+    if (ctx.res && ctx.res._headerSent && !returnResult) { 
+        throw new Error('Headers already sended... cancelling blueprint operation'); //outside callback
+        return;//if any other middleware has ended it
+    }
+
     //----------------------------------------------------------------------------------------------------------
     //checking model
     let model = swapi.imodels[ctx.modelName.toLowerCase()];
@@ -56,6 +62,9 @@ var func = async function (ctx, returnResult) {
         let resp = {error:{ code:"err_blueprint_create", title: "Erro ao criar o novo registro!", details: {data:data,message:e.message, stack:e.stack}}}
         return ctx.res.status(400).send(resp) && false;
     }
+
+    //checking for event cancelation of the operation
+    if (result === false) return false;
     
     
     //----------------------------------------------------------------------------------------------------------

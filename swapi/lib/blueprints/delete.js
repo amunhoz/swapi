@@ -18,7 +18,11 @@ var func = async function (ctx, returnResult) {
         }
     }
     */
-
+    //check headers_sent 
+    if (ctx.res && ctx.res._headerSent && !returnResult) { 
+        throw new Error('Headers already sended... cancelling blueprint operation'); //outside callback
+        return;//if any other middleware has ended it
+    }
     
     //----------------------------------------------------------------------------------------------------------
     //checking model
@@ -54,7 +58,10 @@ var func = async function (ctx, returnResult) {
     //----------------------------------------------------------------------------------------------------------
     //execute
     var result = await model.delete(query,  { req: ctx.req, res: ctx.res });
-	
+    
+    //checking for event cancelation of the operation
+    if (result === false) return false;
+    
     //----------------------------------------------------------------------------------------------------------
     //suport for sub itens 
     if (ctx.subItens && result) {

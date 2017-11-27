@@ -26,6 +26,13 @@ var func = async function (ctx, returnResult) {
     }
     */
 
+
+    //check headers_sent 
+    if (ctx.res && ctx.res._headerSent && !returnResult) { 
+        throw new Error('Headers already sended... cancelling blueprint operation'); //outside callback
+        return;//if any other middleware has ended it
+    }
+
     //----------------------------------------------------------------------------------------------------------
     //checking model
     let model = swapi.imodels[ctx.modelName.toLowerCase()];
@@ -88,6 +95,9 @@ var func = async function (ctx, returnResult) {
         return ctx.res.status(400).send(resp) && false;
     }
 
+    //checking for event cancelation of the operation
+    if (result === false) return false;
+    
     //----------------------------------------------------------------------------------------------------------
     //deal with subitens
     if (ctx.subItens && result[0] && dataItens[0]) {
@@ -135,7 +145,7 @@ var func = async function (ctx, returnResult) {
         //==============================================================================================
         //delete all except the current itens
         scriteria.where[sprimaryKey] = {$nin : currentItens}
-        var result = await smodel.delete(scriteria,  { req: ctx.req, res: ctx.res });
+        let xres = await smodel.delete(scriteria,  { req: ctx.req, res: ctx.res });
         
     }
 

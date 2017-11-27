@@ -33,7 +33,7 @@ module.exports = {
                 let resp = { error: {code:  "err_input_validation", message: "Erro de validação de dados.", details: `Campo '${err.details[0].context.key}' espera formato '${err._object.short_name}'`, stack: err.stack} }
                 res.status(400).send(resp);
             }
-            //next(err); //dont keep going
+            next(err); //dont keep going
         })
 
 

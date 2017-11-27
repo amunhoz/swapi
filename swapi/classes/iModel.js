@@ -22,8 +22,7 @@ iModel.prototype.find = async function (criteria, ctx) {
         ctx.criteria = criteria
         ctx.cancel == false;
         global.lib.blueHelper.emitEvent(this.modelName, "before", "find", ctx);
-        if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
-        if (ctx.cancel == true) return;//if any other middleware has ended it
+        if (ctx.cancel == true) return false;//if any other middleware has ended it
     }
      
     var query = this.model.find(criteria);
@@ -61,7 +60,6 @@ iModel.prototype.find = async function (criteria, ctx) {
     if (swapi.events && this.useEvents) {
         ctx.result = result;
         global.lib.blueHelper.emitEvent(ctx.modelName, "after", "find", ctx);
-        if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
     }
 
     return result;
@@ -79,8 +77,8 @@ iModel.prototype.count = async function (criteria, ctx) {
         ctx.criteria = criteria
         ctx.cancel == false;
         global.lib.blueHelper.emitEvent(this.modelName, "before", "find", ctx);
-        if (ctx.cancel == true) return;//if any other middleware has ended it
-        if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
+        if (ctx.cancel == true) return false;//if any other middleware has ended it
+        
     }
 
     var result = await this.model.count(criteria);
@@ -89,7 +87,7 @@ iModel.prototype.count = async function (criteria, ctx) {
     if (swapi.events && this.useEvents) {
         ctx.result = result;
         global.lib.blueHelper.emitEvent(ctx.modelName, "after", "find", ctx);
-        if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
+        
     }
 
     return result;
@@ -116,8 +114,8 @@ iModel.prototype.findOne = async function (idOrCriteria, ctx) {
         ctx.criteria = criteria
         ctx.cancel == false;
         global.lib.blueHelper.emitEvent(this.modelName, "before", "find", ctx);
-        if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
-        if (ctx.cancel == true) return;//if any other middleware has ended it
+        
+        if (ctx.cancel == true) return false;//if any other middleware has ended it
     }
 
 
@@ -128,7 +126,7 @@ iModel.prototype.findOne = async function (idOrCriteria, ctx) {
     if (swapi.events && this.useEvents) {
         ctx.result = result;
         global.lib.blueHelper.emitEvent(ctx.modelName, "after", "find", ctx);
-        if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
+        
     }
     if (result && result[0]) return result[0];
     else return false;
@@ -156,8 +154,8 @@ iModel.prototype.update = async function (idOrCriteria, data, ctx) {
         ctx.data = data
         ctx.cancel == false;
         global.lib.blueHelper.emitEvent(this.modelName, "before", "update", ctx);
-        if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
-        if (ctx.cancel == true) return;//if any other middleware has ended it
+        
+        if (ctx.cancel == true) return false;//if any other middleware has ended it
     }
 
     var result = await this.model.update(criteria, data);
@@ -165,10 +163,10 @@ iModel.prototype.update = async function (idOrCriteria, data, ctx) {
     if (swapi.events && this.useEvents) {
         ctx.result = result;
         global.lib.blueHelper.emitEvent(this.modelName, "after", "update", ctx);
-        if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
+        
     }
 
-    if (byId = true && result[0]) result = result[0]
+    //if (byId = true && result[0]) result = result[0]
     return result;
 }
 
@@ -184,8 +182,8 @@ iModel.prototype.create = async function (data, ctx) {
         ctx.data = data
         ctx.cancel == false;
         global.lib.blueHelper.emitEvent(this.modelName, "before", "create", ctx);
-        if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
-        if (ctx.cancel == true) return;//if any other middleware has ended it
+        
+        if (ctx.cancel == true) return false;//if any other middleware has ended it
     }
 
     var result = await this.model.create(data);
@@ -193,7 +191,7 @@ iModel.prototype.create = async function (data, ctx) {
     if (swapi.events && this.useEvents) {
         ctx.result = result
         global.lib.blueHelper.emitEvent(this.modelName, "after", "create", ctx);
-        if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
+        
     }
 
     return result;
@@ -221,8 +219,8 @@ iModel.prototype.delete = async function (idOrCriteria, ctx) {
         ctx.criteria = criteria
         ctx.cancel == false;
         global.lib.blueHelper.emitEvent(this.modelName, "before", "delete", ctx);
-        if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
-        if (ctx.cancel == true) return;//if any other middleware has ended it
+        
+        if (ctx.cancel == true) return false;//if any other middleware has ended it
     }
 
     var result = await this.model.destroy(criteria.where);
@@ -231,9 +229,9 @@ iModel.prototype.delete = async function (idOrCriteria, ctx) {
     if (swapi.events && this.useEvents) {
         ctx.result = result;
         global.lib.blueHelper.emitEvent(this.modelName, "after", "delete", ctx);
-        if (ctx.res && ctx.res._headerSent) return;//if any other middleware has ended it
+        
     }
-    if (byId = true && result[0]) result = result[0]
+    //if (byId = true && result[0]) result = result[0]
     return result;
 
 }

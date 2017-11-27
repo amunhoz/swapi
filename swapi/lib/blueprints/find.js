@@ -27,6 +27,12 @@ var find = async function (ctx, returnResult) {
         filter - filter in json format (see waterline doc)
         pupulate - the presence of the parameter will trigger the populate of relations
     */
+
+    //check headers_sent 
+    if (ctx.res && ctx.res._headerSent && !returnResult) { 
+        throw new Error('Headers already sended... cancelling blueprint operation'); //outside callback
+        return;//if any other middleware has ended it
+    }
     
     let criteria = {};
     
@@ -52,6 +58,11 @@ var find = async function (ctx, returnResult) {
     //----------------------------------------------------------------------------------------------------------
     //executing    
     var result = await model.find(query, { req: ctx.req, res: ctx.res });
+    
+    //checking for event cancelation of the operation
+    if (result === false) return false;
+    
+
     var resultFinal = [];   
     //----------------------------------------------------------------------------------------------------------
     //suport for sub itens 

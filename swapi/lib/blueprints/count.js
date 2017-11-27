@@ -15,6 +15,11 @@ var func = async function (ctx, returnResult) {
         }
     }
     */
+    //check headers_sent 
+    if (ctx.res && ctx.res._headerSent && !returnResult) { 
+        throw new Error('Headers already sended... cancelling blueprint operation'); //outside callback
+        return;//if any other middleware has ended it
+    }
 
     //----------------------------------------------------------------------------------------------------------
     //checking model

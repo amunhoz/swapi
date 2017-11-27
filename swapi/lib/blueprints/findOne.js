@@ -24,6 +24,12 @@ var findOne = async function (ctx, returnResult) {
     }
     */
 
+    //check headers_sent 
+    if (ctx.res && ctx.res._headerSent && !returnResult) { 
+        throw new Error('Headers already sended... cancelling blueprint operation'); //outside callback
+        return;//if any other middleware has ended it
+    }
+
     //----------------------------------------------------------------------------------------------------------
     //checking model
     let model = swapi.imodels[ctx.modelName];
@@ -58,14 +64,17 @@ var findOne = async function (ctx, returnResult) {
 
     //----------------------------------------------------------------------------------------------------------
     //use other blueprint to main command
-    var resp = await lib.blueprints.find(ctx, true);
+    var result = await lib.blueprints.find(ctx, true);
+    
+    //checking for event cancelation of the operation
+    if (result === false) return false;
     
     // return results - if false, probaly the res.send was runned
-    if (resp !== false){
+    if (result !== false){
         if (returnResult) {
-            return resp[0];
+            return result[0];
         } else {
-            ctx.res.send(resp[0]);
+            ctx.res.send(result[0]);
         }
     } 
 
