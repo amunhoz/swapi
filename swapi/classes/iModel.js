@@ -13,7 +13,7 @@ function iModel(modelName, useEvents) {
 //==========================================================================================
 //FIND
 iModel.prototype.find = async function (criteria, ctx) {
-    //criteria {filter: {}, sort:"", limit:1, skip:10}
+    //criteria {where: {}, sort:"", limit:1, skip:10}
     
     if(!ctx) ctx = {};
     //emitting event BEFORE
@@ -235,6 +235,22 @@ iModel.prototype.delete = async function (idOrCriteria, ctx) {
     return result;
 
 }
+
+iModel.prototype.query = async function (sql, values) {
+    
+    var prom = new Promise((resolve, reject) => {
+        this.model.query(sql, values, function (err, result) {
+            if (err) reject(err);
+            else {
+                resolve(result)
+            }
+        });        
+    });
+
+    return await prom;
+}
+    
+
 
 async function promisefyQueryExec(query) {
 

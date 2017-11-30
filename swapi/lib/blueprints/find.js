@@ -49,9 +49,11 @@ var find = async function (ctx, returnResult) {
     var query = {};
     
     if (ctx.query) query = Object.assign({}, ctx.query); //clone object
-    for (var ni in ctx.req.query) {
-        if (typeof ctx.req.query[ni] != "undefined" && !ctx.req.query[ni]) 
+    for (var ni in ctx.req.query) { //ERROR!!!
+        let item = ctx.req.query[ni]
+        if ( typeof(item) !== "undefined" && item !== null ) {
             query[ni] = ctx.req.query[ni];
+        }
     }
     if (ctx.addFilter) query.where  = lib.blueHelper.AddAndFilter(query.where, ctx.addFilter);
 
