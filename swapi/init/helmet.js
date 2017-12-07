@@ -1,10 +1,10 @@
 ﻿
 module.exports = {
   name: "helmet",
-  run: async function (app) {
+  run: async function (appExpress) {
 
 		var helmet = require('helmet');
-		app.use(helmet());
+		appExpress.use(helmet());
 
     console.log("(init) Helmet security loaded");
 	

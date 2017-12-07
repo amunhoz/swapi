@@ -32,7 +32,7 @@ var findOne = async function (ctx, returnResult) {
 
     //----------------------------------------------------------------------------------------------------------
     //checking model
-    let model = swapi.imodels[ctx.modelName];
+    let model = app.models[ctx.modelName];
     if (!model) {
         let resp = {error:{ code:"err_blueprint_model_nf", title: "Model not found!", details: {modelName:ctx.modelName}}}
         return ctx.res.status(500).send(resp) && false;

@@ -3,13 +3,13 @@ var mm = require('micromatch');
 
 module.exports = {
     name: "permissions",
-    run: async function (app) {
+    run: async function (appExpress) {
         var mm = require('micromatch');
-        let nroutes = app._router.stack.length;
-        var pconfig = hjson.readFileSync(swapi.config.locations.permissions);
-        var removePath = app.mountpath;
+        let nroutes = appExpress._router.stack.length;
+        var pconfig = hjson.readFileSync(app.config.locations.permissions);
+        var removePath = appExpress.mountpath;
         for (var i = 0; i < nroutes; i++) {
-            let route =  app._router.stack[i].route;
+            let route =  appExpress._router.stack[i].route;
             if (!route) continue;
             let routePath = route.path.replace(removePath,"")
             let finalPerms = {};
@@ -39,14 +39,14 @@ module.exports = {
             }
             route.permissions = finalPerms;
         }
-        swapi.lib.permission = {};
-        swapi.lib.permission.check = function (req, group) {
+        app.lib.permission = {};
+        app.lib.permission.check = function (req, group) {
             let curPerm = req.route.permissions[group];
             if (!curPerm) return "deny";
             return curPerm;
         }
 
-        swapi.lib.permission.checkPath = function (path, method, group) {
+        app.lib.permission.checkPath = function (path, method, group) {
             var result = "deny";
             for (var ig = 0; ig < pconfig.length; ig++) {
                 let igroup = pconfig[ig];

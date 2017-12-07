@@ -3,11 +3,11 @@ var requireDir = require('require-dir');
 
 module.exports = {
   name: "timezone",
-  run: async function (app) {
- 	  if (swapi.config.timezone) {
+  run: async function (appExpress) {
+ 	  if (app.config.timezone) {
           const setTZ = require('set-tz')
-          setTZ(swapi.config.timezone)
-		  console.log("(init) Timezone defined to " + swapi.config.timezone);  
+          setTZ(app.config.timezone)
+		  console.log("(init) Timezone defined to " + app.config.timezone);  
       }
   }
 }

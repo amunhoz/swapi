@@ -1,26 +1,26 @@
 ﻿
 module.exports = {
   name: "express-basic",
-  run: async function (app) {
+	run: async function (appExpress) {
 	  
     var bodyParser = require('body-parser')
-	app.use(bodyParser.urlencoded({ extended: false }))
-	app.use(bodyParser.json())
+		appExpress.use(bodyParser.urlencoded({ extended: true }))
+		appExpress.use(bodyParser.json())
 	
 	var compression = require('compression');
-	app.use(compression())
+	appExpress.use(compression())
 	
 	var cookieParser = require('cookie-parser');
-	app.use(cookieParser());
+	appExpress.use(cookieParser());
 	
 	var cookieSession = require('cookie-session');
-		app.use(cookieSession({
+	appExpress.use(cookieSession({
 		name: 'session',
 		keys: ['lalala', 'bububububububub']
 	}));
 	
 	var session = require('express-session');
-	app.use(session({
+	appExpress.use(session({
 	  secret: 'keyboard categorie lalala',
 	  resave: false,
 	  saveUninitialized: true,

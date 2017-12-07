@@ -2,7 +2,7 @@
 const fs = require("fs");
 module.exports = {
     name: "template",
-    run: async function (app) {
+    run: async function (appExpress) {
         
 		
 		var ejs = require('ejs')
@@ -15,7 +15,7 @@ module.exports = {
 				}
 				let propName= file.replace("/","__").replace('\\','__');
 				if (!templates[propName]) {
-					let fullName = path.resolve (swapi.config.locations.views + "/" + file + ".ejs");
+					let fullName = path.resolve (app.config.locations.views + "/" + file + ".ejs");
 					if (!fs.existsSync(fullName)) {
 						throw Error("View file not found:" + fullName);
 						return false;
@@ -34,9 +34,9 @@ module.exports = {
 			
         };
 
-		app.use(renderMid);
+		appExpress.use(renderMid);
         
-        console.log("(init) EJS Templating loaded from " + swapi.config.locations.views);
+        console.log("(init) EJS Templating loaded from " + app.config.locations.views);
     }
 }
 

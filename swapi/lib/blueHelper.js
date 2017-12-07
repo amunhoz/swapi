@@ -93,27 +93,52 @@ util.getIdFilter = function (req, res, primaryKey, idParam) {
     return filter;
 };
 
+util.parseValue = function (value) {
+    
+    if (typeof value === 'object') {
+        return value
+    } 
+    if (typeof value === 'string') {
+        if (value.substring(0, 1)=="[" || value.substring(0, 1)=="{") {
+            try {
+                return  JSON.parse(value)
+            } catch (e) {
+                console.log("Invalid Json sent to query. Check it out.")
+                return ""
+            }
+        }
+    }
+    
+    
+    return value;
+};
+
+
 util.mergeQuery = function (main, additional) {
     let whiteList = ['where','sort','skip','limit','populate']
     let result = Object.assign({}, main); //clone object
     for (var key in additional){
         //remove itens not related
         if (whiteList.indexOf(key) < 0) continue;
-        
-        /*  let it replace where for now and keep addFilter
-        if (key == "where") {
-            //merge where
-            main['where'] = util.AddAndFilter(main['where'], additional['where'])
-            continue;
-        } */
-
-         if (!result[key]) {
-            //do not replace main config
-            result[key] = additional[key]
+        if (!result[key]) { //do not replace main config
+            //check for empty objects
+            if ( typeof additional[key] !== "undefined" && additional[key] !== null && additional[key] !== "undefined") {
+                if (key == "where") {
+                    //merge where
+                    result['where'] = util.AddAndFilter(main['where'], util.parseValue(additional['where']))
+                } else {
+                    result[key] = util.parseValue(additional[key])
+                }
+            }
         }
+
+
     }
     
     return result;
 };
+
+
+
 
 module.exports = util;

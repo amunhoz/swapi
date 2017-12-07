@@ -38,7 +38,7 @@ var find = async function (ctx, returnResult) {
     
     //----------------------------------------------------------------------------------------------------------
     //checking model
-    let model = swapi.imodels[ctx.modelName];
+    let model = app.models[ctx.modelName];
     if (!model) {
         let resp = {error:{ code:"err_blueprint_model_nf", title: "Model not found!", details: {modelName:ctx.modelName}}}
         return ctx.res.status(500).send(resp) && false;
@@ -49,12 +49,7 @@ var find = async function (ctx, returnResult) {
     var query = {};
     
     if (ctx.query) query = Object.assign({}, ctx.query); //clone object
-    for (var ni in ctx.req.query) { //ERROR!!!
-        let item = ctx.req.query[ni]
-        if ( typeof(item) !== "undefined" && item !== null ) {
-            query[ni] = ctx.req.query[ni];
-        }
-    }
+    if (ctx.req.query) query = lib.blueHelper.mergeQuery (query, ctx.req.query)
     if (ctx.addFilter) query.where  = lib.blueHelper.AddAndFilter(query.where, ctx.addFilter);
 
     //----------------------------------------------------------------------------------------------------------
@@ -70,7 +65,7 @@ var find = async function (ctx, returnResult) {
     //suport for sub itens 
     if (ctx.subItens && result[0]) {
         //checking model
-        let smodel = swapi.imodels[ctx.subItens.modelName];
+        let smodel = app.models[ctx.subItens.modelName];
         if (!smodel) {
             let resp = {error:{ code:"err_blueprint_model_nf", title: "Model not found!", details: {modelName:ctx.subItens.modelName}}}
             return ctx.res.status(500).send(resp) && false;

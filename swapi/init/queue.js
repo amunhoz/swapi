@@ -2,11 +2,11 @@
 const path = require("path");
 module.exports = {
     name: "bull",
-    run: async function (app) {
+    run: async function (appExpress) {
         var queue = require('queue');
 
         swapi.queue = queue();
-        swapi.queue.concurrency = swapi.config.modules.queue.config.concurrency;
+        swapi.queue.concurrency = app.config.modules.queue.config.concurrency;
         swapi.queue.autostart = true;
         console.log("(init) swapi.queue loaded");
     }

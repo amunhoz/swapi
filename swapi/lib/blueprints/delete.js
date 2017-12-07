@@ -26,7 +26,7 @@ var func = async function (ctx, returnResult) {
     
     //----------------------------------------------------------------------------------------------------------
     //checking model
-    let model = swapi.imodels[ctx.modelName.toLowerCase()];
+    let model = app.models[ctx.modelName.toLowerCase()];
     if (!model) {
         let resp = {error:{ code:"err_blueprint_model_nf", title: "Model not found!", details: {modelName:ctx.modelName}}}
         return ctx.res.status(500).send(resp) && false;
@@ -66,7 +66,7 @@ var func = async function (ctx, returnResult) {
     //suport for sub itens 
     if (ctx.subItens && result) {
         //getting model
-        let smodel = swapi.imodels[ctx.subItens.modelName];
+        let smodel = app.models[ctx.subItens.modelName];
         if (!smodel) {
             let resp = {error:{ code:"err_blueprint_model_nf", title: "Model not found!", details: {modelName:ctx.subItens.modelName}}}
             return ctx.res.status(500).send(resp) && false;

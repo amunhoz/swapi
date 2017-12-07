@@ -2,12 +2,12 @@
 
 module.exports = {
   name: "swagger-ui-express",
-  run: async function (app) {
-      if (swapi.config.debug) {
+  run: async function (appExpress) {
+      if (app.config.debug) {
           const swaggerUi = require('swagger-ui-express');
-          const swaggerDocument = require(swapi.config.locations.swaggerFile);
-          swaggerDocument.host = global.swapi.config.host + ':' + global.swapi.config.port;
-          app.use('/explorer', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+          const swaggerDocument = require(app.config.locations.swaggerFile);
+          swaggerDocument.host = app.config.host + ':' + app.config.port;
+          appExpress.use('/explorer', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
           console.log("(init) Swagger Ui Express loaded");
       }
   }

@@ -1,7 +1,7 @@
 ﻿
 module.exports = {
     name: "winston",
-    run: async function (app) {
+    run: async function (appExpress) {
 
 
         var winston = require('winston');
@@ -21,7 +21,7 @@ module.exports = {
                     timestamp: true
                 })
             ]
-        if (swapi.config.debug) {
+        if (app.config.debug) {
             transports.push(new (winston.transports.Console)({ timestamp: true }));
         }
 

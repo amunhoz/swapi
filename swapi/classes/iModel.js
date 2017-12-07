@@ -5,8 +5,8 @@ function iModel(modelName, useEvents) {
     
     this.useEvents = useEvents;
 
-    if (!swapi.models[this.modelName]) throw Error("Model not found! (" + modelName + ")");
-    this.model = swapi.models[this.modelName];
+    if (!app._models[this.modelName]) throw Error("Model not found! (" + modelName + ")");
+    this.model = app._models[this.modelName];
 
 }
 
@@ -249,6 +249,45 @@ iModel.prototype.query = async function (sql, values) {
 
     return await prom;
 }
+
+const math = require('mathjs');
+iModel.prototype.atomicUpdate = async function (id, field, formula) {
+    //formula = "fieldname + 5"
+
+    let keepGoing = true;
+    let finalValue = false;
+    do {
+        let item = await this.model.findOne(id);
+        if (!item) return false;
+        
+        //get current quantity
+        let quantValue =  item[field]
+
+        //query id and quant exactly
+        let query = {id: id} 
+        query[field] = quantValue
+        
+        //create scope for formula
+        let scope = {}
+        scope[field] = quantValue
+
+        //save quantity with formula
+        let data = {}
+        let formulaVal = math.eval(formula, scope)
+        data[field] = formulaVal
+        let result = await this.model.update(query,data)
+        if (result[0]) {
+            finalValue = formulaVal
+            keepGoing = false
+        }
+    }
+    while (keepGoing);
+   
+    return result[0];
+
+}
+
+
     
 
 

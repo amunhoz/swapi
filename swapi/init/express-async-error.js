@@ -1,7 +1,7 @@
 ﻿
 module.exports = {
     name: "express-async-error",
-    run: async function (app) {
+    run: async function (appExpress) {
         //from require('express-async-errors');
         
         //wraper to show async functions errors

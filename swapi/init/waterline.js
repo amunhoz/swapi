@@ -4,16 +4,16 @@ var fs = require('fs');
 
 module.exports = {
     name: "waterline",
-    run: async function (app) {
+    run: async function (appExpress) {
 
 
         var orm = new waterline();
-        let config = require(global.swapi.config.locations.connections); //ERROR
+        let config = require(app.config.locations.connections); //ERROR
 
 
-        let fullPath = global.swapi.config.locations.models;
+        let fullPath = app.config.locations.models;
 
-        swapi.models = {};
+        app._models = {};
         var files = fs.readdirSync(fullPath);
         files.forEach(function (f) {
             var extension = path.extname(f);
@@ -29,12 +29,12 @@ module.exports = {
 
 
 
-        swapi.models = orm.collections;
+        app._models = orm.collections;
 
         //creating model interfaces
-        swapi.imodels = {};
-        for (item in swapi.models) {
-            swapi.imodels[item] = new classes.iModel(item);
+        app.models = {};
+        for (item in app._models) {
+            app.models[item] = new classes.iModel(item);
         }
         
         swapi.waterline = orm;

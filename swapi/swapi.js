@@ -4,23 +4,27 @@ const path = require('path');
 const hjson = require('hjsonfile');
 
 
-global.swapi = {};
+swapi = {};
 
 exports.start = async function (apiFile) {
 
     console.log("(sys) Loading swapi with " + apiFile); 
+    
+    //creating global interface
+    global.swapi = {}
+    global.app = {}
 
     //deal with errors globbaly
     try {
-        swapi.config = hjson.readFileSync(apiFile);
+        app.config = hjson.readFileSync(apiFile);
 
         let apiDir = path.dirname(apiFile); 
-        swapi.config.baseDir = path.resolve(apiDir, swapi.config.baseDir);
-        global.swapi.config.swapiDir = path.resolve(__dirname);
+        app.config.baseDir = path.resolve(apiDir, app.config.baseDir);
+        app.config.swapiDir = path.resolve(__dirname);
 
         //fill properly locations
-        Object.keys(global.swapi.config.locations).forEach(function (key) {
-            global.swapi.config.locations[key] = path.resolve(swapi.config.baseDir, global.swapi.config.locations[key]);
+        Object.keys(app.config.locations).forEach(function (key) {
+            app.config.locations[key] = path.resolve(app.config.baseDir, app.config.locations[key]);
         });
         //start system
         await bootApi();
@@ -34,31 +38,33 @@ exports.start = async function (apiFile) {
 
 
 async function bootApi() {
-	const app = express();
-	var server = http.createServer(app);
-    global.app = app;
+	const appExpress = express();
+	var server = http.createServer(appExpress);
+    
+    
+    swapi.express = appExpress;
 
 	//load libraries
 	var requireDir = require('require-dir');
 	global.lib = {};
-    global.lib = await requireDir(swapi.config.swapiDir + "/lib", { recurse: true });
-    global.classes = await requireDir(swapi.config.swapiDir + "/classes", { recurse: true });
+    global.lib = await requireDir(app.config.swapiDir + "/lib", { recurse: true });
+    global.classes = await requireDir(app.config.swapiDir + "/classes", { recurse: true });
 	console.log("(sys) Loading libraries and classes done.");
 		
 	//load boot services
     var bootFiles = new global.lib.bootDir();
-    swapi.config.modules = hjson.readFileSync(swapi.config.locations.modulesFile);
+    app.config.modules = hjson.readFileSync(app.config.locations.modulesFile);
 
-	await bootFiles.start(  app, 
-                            path.resolve(__dirname, swapi.config.swapiDir + "/init"), 
-                            swapi.config.modules );
+	await bootFiles.start(  appExpress, 
+                            path.resolve(__dirname, app.config.swapiDir + "/init"), 
+                            app.config.modules );
     console.log("------------------------------------------------------------------------");
     console.log("(sys) Loading swapi init done.");
 
 	//start express	
-    server.listen(global.swapi.config.port, function () {
-        console.log('(sys) ' + swapi.config.name + ' listening on port ' + global.swapi.config.port);
-		global.swapi.config.host = server.address().address;
+    server.listen(app.config.port, function () {
+        console.log('(sys) ' + app.config.name + ' listening on port ' + app.config.port);
+		app.config.host = server.address().address;
     });
     
 }

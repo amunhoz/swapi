@@ -21,6 +21,7 @@ exports.leftMergeObj = function (main, additional) {
 };
 
 
+
 //extending objects .cloneMe function
 Object.defineProperty(Object.prototype, "cloneMe", {
     enumerable: false,
@@ -28,3 +29,5 @@ Object.defineProperty(Object.prototype, "cloneMe", {
         return Object.assign({}, this);
     }
 });
+
+

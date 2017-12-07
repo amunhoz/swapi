@@ -1,10 +1,10 @@
 ﻿//mount routes custom place
 module.exports = {
   name: "mount-routes",
-  run: async function (app) {
+  run: async function (appExpress) {
 	const path = require("path");
     var mount = require('mount-routes');
-    mount(app, global.swapi.config.locations.routesDir);
-    console.log("(init) Express path route loaded from " + global.swapi.config.locations.routesDir);
+    mount(appExpress, app.config.locations.routesDir);
+    console.log("(init) Express path route loaded from " + app.config.locations.routesDir);
   }
 }

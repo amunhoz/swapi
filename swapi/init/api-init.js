@@ -3,18 +3,18 @@ var requireDir = require('require-dir');
 
 module.exports = {
   name: "api-init",
-  run: async function (app) {
+  run: async function (appExpress) {
 
-      global.swapi.lib = await requireDir(swapi.config.locations.libs, { recurse: true });
+      app.lib = await requireDir(app.config.locations.libs, { recurse: true });
       console.log("  -> Loading api libraries done.");			
 
 
-      global.swapi.security = await requireDir(swapi.config.locations.security);
+      app.security = await requireDir(app.config.locations.security);
       console.log("  -> Loading security libs done.");			
 
 
 	  var bootFiles = new global.lib.bootDir();
-      await bootFiles.start(app, path.resolve(swapi.config.locations.init));
+      await bootFiles.start(appExpress, path.resolve(app.config.locations.init));
       console.log("  -> Loading api init done.");
 
       console.log("(init) Api init thingsloaded");  
