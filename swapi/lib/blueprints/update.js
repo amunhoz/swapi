@@ -159,6 +159,19 @@ var func = async function (ctx, returnResult) {
         let resp = {error:{ code:"blueprint_reg_not_found", title: "Register not found!", details: {query: query, data:data}}}
         return ctx.res.status(404).send(resp) && false;
     }
+
+    if (returnResult) { 
+        if (result[0]) return result[0]
+        else return {}
+    } else {
+        if (result[0]) {
+            return ctx.res.send(result[0])
+        } else {
+            let resp = {error:{ code:"blueprint_reg_not_found", title: "Register not found!", details: {query: query}}}
+            return ctx.res.status(404).send(resp) && false;
+        }
+    }
+    
     
 }
 

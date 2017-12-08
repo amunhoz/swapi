@@ -18,6 +18,12 @@ module.exports = {
       console.log("  -> Loading api init done.");
 
       console.log("(init) Api init thingsloaded");  
+    
+      //create ctx var
+    appExpress.use(function ( req, res, next) {
+        req.ctx = {};
+        next();
+    })
 
   }
 }

@@ -70,13 +70,19 @@ var findOne = async function (ctx, returnResult) {
     if (result === false) return false;
     
     // return results - if false, probaly the res.send was runned
-    if (result !== false){
-        if (returnResult) {
-            return result[0];
+ 
+    if (returnResult) { 
+        if (result[0]) return result[0]
+        else return {}
+    } else {
+        if (result[0]) {
+            return ctx.res.send(result[0])
         } else {
-            ctx.res.send(result[0]);
+            let resp = {error:{ code:"blueprint_reg_not_found", title: "Register not found!", details: {query: query}}}
+            return ctx.res.status(404).send(resp) && false;
         }
-    } 
+    }
+    
 
     
     

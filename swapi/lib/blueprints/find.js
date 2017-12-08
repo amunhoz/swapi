@@ -92,15 +92,20 @@ var find = async function (ctx, returnResult) {
     } else {
         resultFinal = result;
     }
+    
 
     //----------------------------------------------------------------------------------------------------------
     //return results
-    if (resultFinal[0]) {
-        if (returnResult) return resultFinal
-        else return ctx.res.send(resultFinal)
+    if (returnResult) { 
+        return resultFinal
     } else {
-        let resp = {error:{ code:"blueprint_reg_not_found", title: "Register not found!", details: {query: query}}}
-        return ctx.res.status(404).send(resp) && false;
+        if (resultFinal[0]) {
+            return ctx.res.send(resultFinal)
+        } else {
+            let resp = {error:{ code:"blueprint_reg_not_found", title: "Register not found!", details: {query: query}}}
+            return ctx.res.status(404).send(resp) && false;
+        }
+
     }
 }
 
