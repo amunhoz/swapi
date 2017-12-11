@@ -1,5 +1,5 @@
 ﻿const hjson = require('hjsonfile');
-var mm = require('micromatch');
+const matcher = require('matcher');
 
 module.exports = {
     name: "permissions",
@@ -21,14 +21,28 @@ module.exports = {
                 for (var ip = 0; ip < group.permissions.length; ip++) {
                     let perm = group.permissions[ip];
                     //permissions
-                    if (mm.isMatch(routePath, perm.resource) ){
-                        //route inside pattern
-                        for (var im = 0; im < perm.methods.length; im++) { 
-                            let method = perm.methods[im].toLowerCase();
-                            if (route.methods[method]) {
+                    let resources = []
+                    if (Array.isArray(perm.resource)) {
+                        resources = perm.resource
+                    } else {
+                        resources.push(perm.resource)
+                    }
+                    for (var ir = 0; ir < resources.length; ir++) {
+                        let resource = resources[ir]
+                        
+                        if (matcher.isMatch(routePath, resource) ){
+                            //route inside pattern
+                            if (perm.methods[0] && perm.methods[0] == "*") {
                                 groupNames.map(name => finalPerms[name] = perm.action);
+                            } else {
+                                for (var im = 0; im < perm.methods.length; im++) { 
+                                    let method = perm.methods[im].toLowerCase();
+                                    if (route.methods[method]) {
+                                        groupNames.map(name => finalPerms[name] = perm.action);
+                                    }
+                                }
                             }
-
+    
                         }
                     }
                 }
