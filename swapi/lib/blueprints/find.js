@@ -34,7 +34,6 @@ var find = async function (ctx, returnResult) {
         return;//if any other middleware has ended it
     }
     
-    let criteria = {};
     
     //----------------------------------------------------------------------------------------------------------
     //checking model
@@ -48,7 +47,7 @@ var find = async function (ctx, returnResult) {
     //defining criteria
     var query = {};
     
-    if (ctx.query) query = Object.assign({}, ctx.query); //clone object
+    if (ctx.query) query = JSON.parse(JSON.stringify(ctx.query)); //clone object
     if (ctx.req.query) query = lib.blueHelper.mergeQuery (query, ctx.req.query)
     if (ctx.addFilter) query.where  = lib.blueHelper.AddAndFilter(query.where, ctx.addFilter);
 
@@ -77,7 +76,7 @@ var find = async function (ctx, returnResult) {
         for(var i = 0; i < result.length;i++){
             let squery = {};
             //query customization
-            if (ctx.subItens.query) squery =  Object.assign({}, ctx.subItens.query)  //clone object
+            if (ctx.subItens.query) squery =  JSON.parse(JSON.stringify(ctx.subItens.query))  //clone object
             if (!squery.where) squery.where = {};
             squery.where[ctx.subItens.parentField] = result[i][pprimaryKey];
             if (ctx.subItens.addFilter) squery.where  = lib.blueHelper.AddAndFilter(squery.where, ctx.subItens.addFilter);
