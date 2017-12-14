@@ -35,8 +35,7 @@ module.exports = {
         };
 
 		appExpress.use(renderMid);
-        
-        console.log("(init) EJS Templating loaded from " + app.config.locations.views);
+
     }
 }
 

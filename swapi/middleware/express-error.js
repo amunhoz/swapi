@@ -41,7 +41,17 @@ module.exports = {
             let resp = { sucess: false ,error: {code: 999999, message: err.message, stack: err.stack} }
             res.status(500).send(resp);
         }
-*/
-        console.log("(init) Express async errors loaded");
+    */
+
+        //commom express errors
+        appExpress.use(function (err, req, res, next) {
+            if (err) {
+                let resp = { error: {code: "err_express_general", title:"Erro geral express",details:{message: err.message, stack: err.stack}} }
+                res.status(err.status ? err.status : 500).send(resp);
+                sysLog.error({message: err.message, stack: err.stack});
+            }
+            next(err);
+        })
+
     }
 }

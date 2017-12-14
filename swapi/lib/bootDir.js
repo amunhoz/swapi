@@ -68,6 +68,7 @@ cModule.prototype.execScript = async function (xapp) {
 
     for (var i = 0, len = _this.scriptsOrder.length; i < len; i++) {
         let sname = _this.scriptsOrder[i];
+            console.log("       " + sname + " loaded.")
             await   _this.scripts[sname].run(xapp)
         } 
     

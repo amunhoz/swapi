@@ -6,7 +6,6 @@ module.exports = {
     var serveStatic = require('serve-static')
     var dir = app.config.locations.static;
     appExpress.use(serveStatic(dir, { 'index': ['default.html', 'default.htm'] }))
-    console.log("(init) Server static loaded");
 
 	
   }

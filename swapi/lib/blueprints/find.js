@@ -48,8 +48,8 @@ var find = async function (ctx, returnResult) {
     var query = {};
     
     if (ctx.query) query = JSON.parse(JSON.stringify(ctx.query)); //clone object
-    if (ctx.req.query) query = lib.blueHelper.mergeQuery (query, ctx.req.query)
-    if (ctx.addFilter) query.where  = lib.blueHelper.AddAndFilter(query.where, ctx.addFilter);
+    if (ctx.req.query) query = swapi.lib.blueHelper.mergeQuery (query, ctx.req.query)
+    if (ctx.addFilter) query.where  = swapi.lib.blueHelper.AddAndFilter(query.where, ctx.addFilter);
 
     //----------------------------------------------------------------------------------------------------------
     //executing    
@@ -79,7 +79,7 @@ var find = async function (ctx, returnResult) {
             if (ctx.subItens.query) squery =  JSON.parse(JSON.stringify(ctx.subItens.query))  //clone object
             if (!squery.where) squery.where = {};
             squery.where[ctx.subItens.parentField] = result[i][pprimaryKey];
-            if (ctx.subItens.addFilter) squery.where  = lib.blueHelper.AddAndFilter(squery.where, ctx.subItens.addFilter);
+            if (ctx.subItens.addFilter) squery.where  = swapi.lib.blueHelper.AddAndFilter(squery.where, ctx.subItens.addFilter);
 
             //execute query
             var sresult = await smodel.find(squery, { req: ctx.req, res: ctx.res });

@@ -4,7 +4,7 @@ var fs = require('fs');
 
 module.exports = {
     name: "waterline",
-    run: async function (appExpress) {
+    run: async function () {
 
 
         var orm = new waterline();
@@ -34,7 +34,7 @@ module.exports = {
         //creating model interfaces
         app.models = {};
         for (item in app._models) {
-            app.models[item] = new classes.iModel(item);
+            app.models[item] = new swapi.classes.iModel(item);
         }
         
         swapi.waterline = orm;
@@ -52,7 +52,7 @@ async function waitForOrm(orm, config) {
             if (err) reject(err);
             else {
                 resolve()
-                console.log("(init) Waterline loaded");
+                console.log("       Waterline full loaded.");
             }
         });
 

@@ -2,25 +2,29 @@
   // port to listen
   "port": 3000,
 
-  // hosto to swagger ui
+  // host to swagger ui
   "host": "127.0.0.1",
 
-  //service name
-  "name": "Swapi example",
+  // service name
+  "name": "Wezilog api",
 
-  //basedir for locations
+  // basedir for locations
   "baseDir": "../",
 
   //timezone
-  "timezone":  "UTC",
+  //"timezone":  "UTC",
 
-  //activate swagger explorer in http://host:port/explorer
+  // activate swagger explorer in http://host:port/explorer
   "debug": true,
+  
+  // activate multi Core support
+  "cores": 1,  //"cores": "auto",
 
   //default locations
   "locations": {
     "swaggerFile": "config/swagger20.json",
-    "modulesFile": "config/modules.hjson",
+    "initFile": "config/init.json",
+    "middlewareFile": "config/middleware.json",
     "connections": "config/connections.js",
 	"permissions": "config/permissions.json",
     "routesApi": "./routesApi",
@@ -30,6 +34,7 @@
     "libs": "./lib",
     "views": "./views",
     "init": "./init",
+    "middleware": "./middleware",
     "static": "./public"
   }
 

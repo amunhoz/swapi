@@ -27,6 +27,6 @@ module.exports = {
 	  cookie: { secure: true }
 	}))
 
-    console.log("(init) Express basic config loaded");
+
   }
 }

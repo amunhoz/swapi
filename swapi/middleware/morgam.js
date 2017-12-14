@@ -9,7 +9,6 @@ module.exports = {
                                              { flags: 'a' })
 	  
     appExpress.use(morgan('combined', { stream: accessLogStream }))
-    console.log("(init) Morgan log loaded");
 
 	
   }

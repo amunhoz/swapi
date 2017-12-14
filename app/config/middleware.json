@@ -1,0 +1,84 @@
+{
+  
+  //===================================================================================
+  //express logging
+  "morgam": {
+    "enabled": false,
+    "priority": 10
+  },
+
+  //===================================================================================
+  //basic configuration for express, gzip, etc.
+  "express-basic": {
+    "enabled": true,
+    "priority": 10
+  },
+
+  //===================================================================================
+  //start api boot scripts
+  "api-init": {
+    "enabled": true,
+    "priority": 15
+  },
+
+ //===================================================================================
+  //template system for /views
+  // use swapi.render(tplname);
+  "template": {
+    "enabled": true,
+    "priority": 10
+  },
+  
+  //===================================================================================
+  //create a api test interface on http://host:port/explorer
+  "swagger-ui-express": {
+    "enabled": true,
+    "priority": 999
+  },
+
+  //===================================================================================
+  //serve static files on /public location
+  "serve-static": {
+    "enabled": true,
+    "priority": 999
+  },
+
+  //===================================================================================
+  //too much security for test enviroment
+  "helmet": {
+    "enabled": false,
+    "priority": 999
+  },
+
+  //===================================================================================
+  //build routes based on swagger documentation on routesApi
+  "swaggerize-express": {
+    "enabled": true,
+    "priority": 999
+  },
+
+
+  //===================================================================================
+  //build routes from routesDir directory files
+  "mount-routes": {
+    "enabled": true,
+    "priority": 1000
+  },
+
+
+  //===================================================================================
+  //custom express errors with json response
+  "express-error": {
+    "enabled": true,
+    "priority": 1001
+  },
+
+
+  //===================================================================================
+  //load permissions to routes
+  "permissions": {
+    "enabled": true,
+    "priority": 1001
+  }
+
+}

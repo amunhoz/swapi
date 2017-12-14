@@ -1,7 +1,7 @@
 ﻿
 module.exports = {
     name: "winston",
-    run: async function (appExpress) {
+    run: async function () {
 
 
         var winston = require('winston');
@@ -28,6 +28,7 @@ module.exports = {
         global.sysLog = new (winston.Logger)({
             transports: transports
         });
-        console.log("(init) Winston loaded");
+        swapi.sysLog = global.sysLog;
+
     }
 }

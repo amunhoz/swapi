@@ -80,7 +80,6 @@ module.exports = {
             return result;
         }
 
-        console.log("(init) Permissions loaded");
     }
 }
 

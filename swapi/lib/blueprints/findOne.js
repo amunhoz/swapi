@@ -57,14 +57,14 @@ var findOne = async function (ctx, returnResult) {
     let query = {}
     if (ctx.query) query = ctx.query;
     //get filter from res
-    if (!query.where) query.where = lib.blueHelper.getIdFilter(ctx.req, ctx.res, primaryKey, idParam);
-    if (ctx.query && ctx.query.where) query.where = lib.blueHelper.mergeQuery(query.where, ctx.query.where);
-    if (ctx.addFilter) query.where  = lib.blueHelper.AddAndFilter(query.where, ctx.addFilter)
+    if (!query.where) query.where = swapi.lib.blueHelper.getIdFilter(ctx.req, ctx.res, primaryKey, idParam);
+    if (ctx.query && ctx.query.where) query.where = swapi.lib.blueHelper.mergeQuery(query.where, ctx.query.where);
+    if (ctx.addFilter) query.where  = swapi.lib.blueHelper.AddAndFilter(query.where, ctx.addFilter)
     ctx.query = query;
 
     //----------------------------------------------------------------------------------------------------------
     //use other blueprint to main command
-    var result = await lib.blueprints.find(ctx, true);
+    var result = await swapi.lib.blueprints.find(ctx, true);
     
     //checking for event cancelation of the operation
     if (result === false) return false;

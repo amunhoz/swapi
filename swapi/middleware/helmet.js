@@ -6,7 +6,6 @@ module.exports = {
 		var helmet = require('helmet');
 		appExpress.use(helmet());
 
-    console.log("(init) Helmet security loaded");
-	
+
   }
 }

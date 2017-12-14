@@ -7,7 +7,7 @@ module.exports = {
     enabled: true,
     run: async function (app) {
 
-		console.log(" -- (api init) Tests cache loaded");
+		console.log(" -- (api init) Tests queue loaded");
         //test swapi queue
         for (var i = 0; i < 5; i++) {
 

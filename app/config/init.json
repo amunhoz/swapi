@@ -1,0 +1,74 @@
+{
+        //===================================================================================
+        // system log
+        // use sysLog.info(), sysLog.error()
+        "winston": {
+          "enabled": true,
+          "priority": 1
+        },
+
+      //===================================================================================
+        // queue system for swapi check https://www.npmjs.com/package/queue
+        // use swapi.queue.add(function());
+        "queue": {
+          "enabled": true,
+          "priority": 2,
+          "config": {
+            //job concurrency
+            "concurrency": 4
+          }
+        },
+
+        //===================================================================================
+        //events library loaded into swapi.events
+        "events": {
+          "enabled": true,
+          "priority": 3
+        },
+
+      //===================================================================================
+        //Define a custom timezone for the app
+        "timezone": {
+          "enabled": true,
+          "priority": 4
+        },
+
+    
+        //===================================================================================
+        // automatic open models on /models
+        // swapi.models or swapi.imodels (modified version with events triggers)
+        "waterline": {
+          "enabled": true,
+          "priority": 11
+        },
+
+        //===================================================================================
+        //start cache manager
+        // loaded into swapi.cache
+        "cache-manager": {
+          "enabled": true,
+          "priority": 11,
+
+          //check https://www.npmjs.com/package/cache-manager for options
+          "options": {
+            "store": "memory",
+            "max": 100000,
+            "ttl": 86400 /*1 day in seconds*/
+          }
+
+        },
+
+      //===================================================================================
+        //load node-schedule on swapi.schedule
+        "schedule": {
+          "enabled": true,
+          "priority": 12
+        },
+
+        //===================================================================================
+        //start api boot scripts
+        "api-init": {
+          "enabled": true,
+          "priority": 15
+        }
+}

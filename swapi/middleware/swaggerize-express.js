@@ -41,7 +41,6 @@ module.exports = {
 
         appExpress.swagger.api.host = app.config.host + ':' + app.config.port;
         
-        console.log("(init) Swagger express routes loaded");
 	  
   }
 }

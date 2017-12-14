@@ -8,7 +8,7 @@ module.exports = {
           const swaggerDocument = require(app.config.locations.swaggerFile);
           swaggerDocument.host = app.config.host + ':' + app.config.port;
           appExpress.use('/explorer', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-          console.log("(init) Swagger Ui Express loaded");
+
       }
   }
 }

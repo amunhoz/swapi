@@ -59,9 +59,9 @@ var func = async function (ctx, returnResult) {
     let query = {}
     
     //get filter from res
-    query.where = lib.blueHelper.getIdFilter(ctx.req, ctx.res, primaryKey, idParam);
-    if (ctx.query && ctx.query.where) query.where = lib.blueHelper.mergeQuery(query.where, ctx.query.where);
-    if (ctx.addFilter) query.where  = lib.blueHelper.AddAndFilter(query.where, ctx.addFilter)
+    query.where = swapi.lib.blueHelper.getIdFilter(ctx.req, ctx.res, primaryKey, idParam);
+    if (ctx.query && ctx.query.where) query.where = swapi.lib.blueHelper.mergeQuery(query.where, ctx.query.where);
+    if (ctx.addFilter) query.where  = swapi.lib.blueHelper.AddAndFilter(query.where, ctx.addFilter)
 
     
     //----------------------------------------------------------------------------------------------------------

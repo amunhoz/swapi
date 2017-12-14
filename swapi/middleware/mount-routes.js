@@ -5,6 +5,6 @@ module.exports = {
 	const path = require("path");
     var mount = require('mount-routes');
     mount(appExpress, app.config.locations.routesDir);
-    console.log("(init) Express path route loaded from " + app.config.locations.routesDir);
+    console.log("                (mid) Express path route loaded from " + app.config.locations.routesDir);
   }
 }

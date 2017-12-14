@@ -34,8 +34,8 @@ var func = async function (ctx, returnResult) {
     var query = {};
 
     if (ctx.query) query = JSON.parse(JSON.stringify(ctx.query)) ; //clone object
-    if (ctx.req.query) query = lib.blueHelper.mergeQuery (query, ctx.req.query)
-    if (ctx.addFilter) query.where  = lib.blueHelper.AddAndFilter(query.where, ctx.addFilter);
+    if (ctx.req.query) query = swapi.lib.blueHelper.mergeQuery (query, ctx.req.query)
+    if (ctx.addFilter) query.where  = swapi.lib.blueHelper.AddAndFilter(query.where, ctx.addFilter);
         
     //----------------------------------------------------------------------------------------------------------
     //main command

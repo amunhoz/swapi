@@ -21,7 +21,7 @@ iModel.prototype.find = async function (criteria, ctx) {
         ctx.model = this.model
         ctx.criteria = criteria
         ctx.cancel == false;
-        global.lib.blueHelper.emitEvent(this.modelName, "before", "find", ctx);
+        swapi.lib.blueHelper.emitEvent(this.modelName, "before", "find", ctx);
         if (ctx.cancel == true) return false;//if any other middleware has ended it
     }
      
@@ -59,7 +59,7 @@ iModel.prototype.find = async function (criteria, ctx) {
     //emitting event AFTER
     if (swapi.events && this.useEvents) {
         ctx.result = result;
-        global.lib.blueHelper.emitEvent(ctx.modelName, "after", "find", ctx);
+        swapi.lib.blueHelper.emitEvent(ctx.modelName, "after", "find", ctx);
     }
 
     return result;
@@ -76,7 +76,7 @@ iModel.prototype.count = async function (criteria, ctx) {
         ctx.model = this.model
         ctx.criteria = criteria
         ctx.cancel == false;
-        global.lib.blueHelper.emitEvent(this.modelName, "before", "find", ctx);
+        swapi.lib.blueHelper.emitEvent(this.modelName, "before", "find", ctx);
         if (ctx.cancel == true) return false;//if any other middleware has ended it
         
     }
@@ -86,7 +86,7 @@ iModel.prototype.count = async function (criteria, ctx) {
     //emitting event AFTER
     if (swapi.events && this.useEvents) {
         ctx.result = result;
-        global.lib.blueHelper.emitEvent(ctx.modelName, "after", "find", ctx);
+        swapi.lib.blueHelper.emitEvent(ctx.modelName, "after", "find", ctx);
         
     }
 
@@ -113,7 +113,7 @@ iModel.prototype.findOne = async function (idOrCriteria, ctx) {
         ctx.model = this.model
         ctx.criteria = criteria
         ctx.cancel == false;
-        global.lib.blueHelper.emitEvent(this.modelName, "before", "find", ctx);
+        swapi.lib.blueHelper.emitEvent(this.modelName, "before", "find", ctx);
         
         if (ctx.cancel == true) return false;//if any other middleware has ended it
     }
@@ -125,7 +125,7 @@ iModel.prototype.findOne = async function (idOrCriteria, ctx) {
     //emitting event AFTER
     if (swapi.events && this.useEvents) {
         ctx.result = result;
-        global.lib.blueHelper.emitEvent(ctx.modelName, "after", "find", ctx);
+        swapi.lib.blueHelper.emitEvent(ctx.modelName, "after", "find", ctx);
         
     }
     if (result && result[0]) return result[0];
@@ -153,7 +153,7 @@ iModel.prototype.update = async function (idOrCriteria, data, ctx) {
         ctx.criteria = criteria
         ctx.data = data
         ctx.cancel == false;
-        global.lib.blueHelper.emitEvent(this.modelName, "before", "update", ctx);
+        swapi.lib.blueHelper.emitEvent(this.modelName, "before", "update", ctx);
         
         if (ctx.cancel == true) return false;//if any other middleware has ended it
     }
@@ -162,7 +162,7 @@ iModel.prototype.update = async function (idOrCriteria, data, ctx) {
     //emitting event AFTER
     if (swapi.events && this.useEvents) {
         ctx.result = result;
-        global.lib.blueHelper.emitEvent(this.modelName, "after", "update", ctx);
+        swapi.lib.blueHelper.emitEvent(this.modelName, "after", "update", ctx);
         
     }
 
@@ -181,7 +181,7 @@ iModel.prototype.create = async function (data, ctx) {
         ctx.model = this.model
         ctx.data = data
         ctx.cancel == false;
-        global.lib.blueHelper.emitEvent(this.modelName, "before", "create", ctx);
+        swapi.lib.blueHelper.emitEvent(this.modelName, "before", "create", ctx);
         
         if (ctx.cancel == true) return false;//if any other middleware has ended it
     }
@@ -190,7 +190,7 @@ iModel.prototype.create = async function (data, ctx) {
     //emitting event AFTER
     if (swapi.events && this.useEvents) {
         ctx.result = result
-        global.lib.blueHelper.emitEvent(this.modelName, "after", "create", ctx);
+        swapi.lib.blueHelper.emitEvent(this.modelName, "after", "create", ctx);
         
     }
 
@@ -218,7 +218,7 @@ iModel.prototype.delete = async function (idOrCriteria, ctx) {
         ctx.model = this.model
         ctx.criteria = criteria
         ctx.cancel == false;
-        global.lib.blueHelper.emitEvent(this.modelName, "before", "delete", ctx);
+        swapi.lib.blueHelper.emitEvent(this.modelName, "before", "delete", ctx);
         
         if (ctx.cancel == true) return false;//if any other middleware has ended it
     }
@@ -228,7 +228,7 @@ iModel.prototype.delete = async function (idOrCriteria, ctx) {
     //emitting event AFTER
     if (swapi.events && this.useEvents) {
         ctx.result = result;
-        global.lib.blueHelper.emitEvent(this.modelName, "after", "delete", ctx);
+        swapi.lib.blueHelper.emitEvent(this.modelName, "after", "delete", ctx);
         
     }
     //if (byId = true && result[0]) result = result[0]
