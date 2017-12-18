@@ -102,7 +102,7 @@ iModel.prototype.findOne = async function (idOrCriteria, ctx) {
     if(!ctx) ctx = {};
     let criteria = {};
     if ((!!idOrCriteria) && (idOrCriteria.constructor === Object)) {
-        criteria = idOrCriteria;
+        criteria.where = idOrCriteria;
     } else {
         criteria.where = {};
         criteria.where[this.model.primaryKey] = idOrCriteria;
@@ -140,7 +140,7 @@ iModel.prototype.update = async function (idOrCriteria, data, ctx) {
     let criteria = {};
     let byId = false;
     if ((!!idOrCriteria) && (idOrCriteria.constructor === Object)) {
-        criteria = idOrCriteria;
+        criteria.where = idOrCriteria;
     } else {
         criteria.where = {};
         criteria.where[this.model.primaryKey] = idOrCriteria;
@@ -206,7 +206,7 @@ iModel.prototype.delete = async function (idOrCriteria, ctx) {
     let criteria = {};
     let byId = false;
     if ((!!idOrCriteria) && (idOrCriteria.constructor === Object)) {
-        criteria = idOrCriteria;
+        criteria.where = idOrCriteria;
     } else {
         criteria.where = {};
         criteria.where[this.model.primaryKey] = idOrCriteria;
@@ -223,7 +223,7 @@ iModel.prototype.delete = async function (idOrCriteria, ctx) {
         if (ctx.cancel == true) return false;//if any other middleware has ended it
     }
 
-    var result = await this.model.destroy(criteria.where);
+    var result = await this.model.destroy(criteria);
     
     //emitting event AFTER
     if (swapi.events && this.useEvents) {

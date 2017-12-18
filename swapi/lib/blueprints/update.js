@@ -109,6 +109,8 @@ var func = async function (ctx, returnResult) {
         }
 
         let pprimaryKey = model.model.primaryKey;
+        if (ctx.subItens.primaryKey) pprimaryKey = ctx.subItens.primaryKey
+        
         let sprimaryKey = ssmodel.model.primaryKey;
         result[0][ctx.subItens.itemName] = [];
         var sresult;

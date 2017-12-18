@@ -71,6 +71,7 @@ var find = async function (ctx, returnResult) {
         }
         
         let pprimaryKey = model.model.primaryKey;
+        if (ctx.subItens.primaryKey) pprimaryKey = ctx.subItens.primaryKey
         
         //getting subitens from each result
         for(var i = 0; i < result.length;i++){

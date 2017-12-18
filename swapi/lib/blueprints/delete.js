@@ -75,6 +75,8 @@ var func = async function (ctx, returnResult) {
         let scriteria = {};
         scriteria.where = {};
         let pprimaryKey = model.model.primaryKey;
+        if (ctx.subItens.primaryKey) pprimaryKey = ctx.subItens.primaryKey
+        
         scriteria.where[ctx.subItens.parentField] = result[pprimaryKey];
         
         // delete at once

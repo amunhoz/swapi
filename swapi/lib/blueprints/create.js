@@ -79,6 +79,7 @@ var func = async function (ctx, returnResult) {
 
         let defaults = {};
         let pprimaryKey = model.model.primaryKey;
+        if (ctx.subItens.primaryKey) pprimaryKey = ctx.subItens.primaryKey
         
         result[ctx.subItens.itemName] = [];
 
