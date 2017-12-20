@@ -1,3 +1,0 @@
-https://www.npmjs.com/package/sails-model-reverser
-https://www.npmjs.com/package/sails-generate-models
-https://www.npmjs.com/package/waterline-auto

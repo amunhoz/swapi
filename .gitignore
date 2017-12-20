@@ -3,3 +3,5 @@ SwapiProj.sln
 swapiExample.nsproj
 express_frame.nsproj
 /.project
+/bin/
+/obj/

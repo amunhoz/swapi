@@ -1,2 +1,0 @@
-D:\gDrive\_prog\git\tictrade2\userapi\obj\Debug\userapi.njsprojResolveAssemblyReference.cache
-D:\gDrive\_prog\git\tictrade2\userapi\bin\Microsoft.NodejsTools.WebRole.dll
